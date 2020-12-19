@@ -1,19 +1,13 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
-
-@Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id = undefined;
-
-  @Column("varchar")
-  firstName = "";
-
-  @Column("varchar")
-  lastName = "";
-
-  @Column("varchar")
-  email = "";
-
-  @Column("varchar")
-  password = "";
+class User {
+  constructor(id, firstName, lastName, email, password) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.password = password;
+  }
 }
+
+module.exports = {
+  User,
+};
