@@ -39,7 +39,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // set public paths
-app.use('/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(morgan('combined', { stream: httpLogger.stream }));
@@ -57,14 +56,15 @@ app.use((req, res, next) => {
 });
 
 // error handler
-app.use((err, req, res) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', { status: err.status || 500, message: res.locals.message, stack: res.locals.error.stack });
 });
 
 module.exports = app;
