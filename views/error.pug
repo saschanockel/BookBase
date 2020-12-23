@@ -1,6 +1,10 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  div(class='d-flex justify-content-center align-items-center mt-4')
+    h1(class='mr-3 pr-3 align-top border-right inline-block align-content-center')= status
+    div(class='inline-block align-middle')
+      h2(class='font-weight-normal lead')= message
+  if stack
+    div(class='d-flex justify-content-center align-items-center mt-4')
+      pre #{stack}

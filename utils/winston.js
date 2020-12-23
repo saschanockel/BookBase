@@ -54,7 +54,7 @@ const httpLogger = createLogger({
   ],
 });
 
-// pipe morgan http log stream into silly level of httpLogger
+// pipe morgan http log stream into http level of httpLogger
 httpLogger.stream = {
   write(message) {
     httpLogger.http(message.trim());
