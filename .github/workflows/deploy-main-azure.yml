@@ -22,10 +22,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install -g yarn
       - name: Run yarn install
-        run: |
-          # Install dependencies, then
-          # deploy to Azure Web App.
-          yarn install
+        run: yarn install
       - name: 'Deploy to Azure WebApp'
         uses: azure/webapps-deploy@v2
         with:
