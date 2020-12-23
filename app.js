@@ -1,6 +1,7 @@
 // load env variables
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
+const yn = require('yn');
 
 // load modules
 const express = require('express');
@@ -30,6 +31,9 @@ createConnection({
   synchronize: true,
   logging: ['error', 'query'],
   logger: 'file',
+  extra: {
+    ssl: yn(process.env.DB_SSL),
+  },
 }).catch((error) => logger.error(`[database] ${error.message}\n${error.stack}`));
 
 const app = express();
