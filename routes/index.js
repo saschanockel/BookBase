@@ -7,4 +7,9 @@ router.get('/', (req, res) => {
   res.render('index', { title: 'BookBase' });
 });
 
+/* GET register page. */
+router.get('/account', (req, res) => {
+  res.render('account', { title: 'BookBase | Sign Up' });
+});
+
 module.exports = router;

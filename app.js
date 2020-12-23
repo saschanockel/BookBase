@@ -68,7 +68,12 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error', { status: err.status || 500, message: res.locals.message, stack: res.locals.error.stack });
+  res.render('error', {
+    status: err.status || 500,
+    message: res.locals.message,
+    stack: res.locals.error.stack,
+    title: res.locals.message,
+  });
 });
 
 module.exports = app;

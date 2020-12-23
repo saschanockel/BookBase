@@ -9,7 +9,7 @@ html
       script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js' integrity='sha512-iceXjjbmB2rwoX93Ka6HAHP+B76IY1z0o3h+N1PeDtRSsyeetU3/0QKJqGyPJcX63zysNehggFwMC/bi7dvMig==' crossorigin='anonymous')
   body(class='bg-light')
     block navbar
-      nav(class='navbar navbar-expand-lg navbar-dark bg-dark')
+      nav(class='navbar navbar-expand-lg navbar-dark bg-dark mb-3')
         block navbar-brand
           a(class='navbar-brand') BookBase
         block navbar-toggler
@@ -27,10 +27,6 @@ html
               button(class='btn btn-secondary my-2 my-sm-0' type='submit') Search
           block account
             div(class='btn-group')
-              button(class='btn btn-secondary btn-md ml-2 dropdown-toggle' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false') Account
-              div(class='dropdown-menu bg-light')
-                block login
-                  a(class='dropdown-item' href='/login') Login
-                block register
-                  a(class='dropdown-item' href='/register') Register
-    block content
+              a(class='btn btn-secondary btn-md ml-2' href='/account') Account
+    div(class='container')
+      block content
