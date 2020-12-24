@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
 
 /* GET register page. */
 router.get('/account', (req, res) => {
-  res.render('account', { title: 'BookBase | Sign Up' });
+  res.render('account', { title: 'BookBase | Account' });
 });
 
 module.exports = router;

@@ -15,7 +15,7 @@ const { httpLogger, logger } = require('./utils/winston');
 
 // create routers
 const indexRouter = require('./routes');
-const usersRouter = require('./routes/users');
+const customersRouter = require('./routes/customers');
 
 // setup db connection
 createConnection({
@@ -52,7 +52,7 @@ app.use(cookieParser());
 
 // setup routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/customers', customersRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
