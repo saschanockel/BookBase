@@ -1,7 +1,7 @@
 const express = require('express');
 const { validationResult } = require('express-validator');
 const { getConnection } = require('typeorm');
-const validator = require('./validators/customers');
+const validator = require('./validators/sellers');
 const { logger } = require('../utils/winston');
 
 const router = express.Router();

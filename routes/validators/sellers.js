@@ -3,7 +3,7 @@ const { body } = require('express-validator');
 /**
  * Utility class for supplying parameter checks
  */
-class CustomersValidator {
+class SellersValidator {
   /**
    * provide validation for signIn
    *
@@ -70,14 +70,6 @@ class CustomersValidator {
         .isAlphanumeric()
         .isLength({ min: 3, max: 16 })
         .optional(),
-      body('firstName')
-        .isString()
-        .isLength({ min: 1, max: 128 })
-        .optional(),
-      body('lastName')
-        .isString()
-        .isLength({ min: 1, max: 128 })
-        .optional(),
       body('email')
         .isEmail()
         .isLength({ max: 64 })
@@ -100,20 +92,8 @@ class CustomersValidator {
           }
         })
         .optional(),
-      body('zip')
-        .isString()
-        .isLength({ min: 1, max: 32 })
-        .optional(),
-      body('city')
-        .isString()
-        .isLength({ min: 1, max: 128 })
-        .optional(),
-      body('address')
-        .isString()
-        .isLength({ min: 1, max: 128 })
-        .optional(),
     ];
   }
 }
 
-module.exports = CustomersValidator;
+module.exports = SellersValidator;
