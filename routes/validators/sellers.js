@@ -1,15 +1,7 @@
 const { body } = require('express-validator');
 
-/**
- * Utility class for supplying parameter checks
- */
 class SellersValidator {
-  /**
-   * provide validation for signIn
-   *
-   * @return {ValidationChain[]}
-   */
-  static signIn() {
+  static login() {
     return [
       body('username')
         .isString()
@@ -20,16 +12,9 @@ class SellersValidator {
     ];
   }
 
-  /**
-   * provide validation for signUp
-   *
-   * @return {ValidationChain[]}
-   */
-  static signUp() {
+  static register() {
     return [
       body('username')
-        .isAlphanumeric()
-        .isLength({ min: 3, max: 16 })
         .exists(),
       body('email')
         .isEmail()
@@ -56,11 +41,6 @@ class SellersValidator {
     ];
   }
 
-  /**
-   * provide validation for update
-   *
-   * @return {any[]}
-   */
   static update() {
     return [
       body('id')

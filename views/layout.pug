@@ -21,12 +21,25 @@ html
               block books
                 li(class='nav-item active')
                   a(class='nav-link' href='/') Books
+          block userInfo
+            if username
+              if isSeller
+                p(class='nav navbar-text mr-2') Logged in as Seller #{username} (#{email})
+              else
+                p(class='nav navbar-text mr-2') Logged in as Customer #{username} (#{email})
           block search
             form(class='form-inline my-2 my-lg-0')
               input(class='form-control mr-sm-2 bg-light' type='search' placeholder='Search' aria-label='Search')
               button(class='btn btn-secondary my-2 my-sm-0' type='submit') Search
           block account
             div(class='btn-group')
-              a(class='btn btn-secondary btn-md ml-2' href='/account') Account
+              button(class='btn btn-secondary btn-md ml-2 dropdown-toggle' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false') Account
+              div(class='dropdown-menu bg-light')
+                block register
+                  a(class='dropdown-item' href='/register') Register
+                block login
+                  a(class='dropdown-item' href='/login') Login
+                block logout
+                  a(class='dropdown-item' href='/logout') Logout
     div(class='container')
       block content

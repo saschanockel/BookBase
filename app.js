@@ -12,6 +12,7 @@ const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const { httpLogger, logger } = require('./utils/winston');
+const getUserInfo = require('./middlewares/getUserInfo');
 
 // create routers
 const indexRouter = require('./routes');
@@ -50,6 +51,7 @@ app.use(morgan('combined', { stream: httpLogger.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(getUserInfo);
 
 // setup routes
 app.use('/', indexRouter);
