@@ -18,9 +18,12 @@ html
         div(class='collapse navbar-collapse' id='nav-items')
           ul(class='navbar-nav mr-auto mt-2 mt-lg-0')
             block nav-items
-              block books
-                li(class='nav-item active')
-                  a(class='nav-link' href='/') Books
+              block shop
+                li(class='nav-item')
+                  a(class='nav-link' href='/') Shop
+              if username
+                if isSeller
+                  a(class='nav-link' href='/books/manage') Manage my books
           block userInfo
             if username
               if isSeller
@@ -40,6 +43,7 @@ html
                 block login
                   a(class='dropdown-item' href='/login') Login
                 block logout
-                  a(class='dropdown-item' href='/logout') Logout
+                  form(role='form' method='post' action='/logout')
+                    input(class='dropdown-item' type='submit' value='Logout')
     div(class='container')
       block content

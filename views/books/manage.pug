@@ -1,0 +1,23 @@
+extends ../layout
+
+block content
+  .row
+    .col-md-6.mx-auto
+      form#addBookForm(role='form' method='post' action='/books/add' enctype='multipart/form-data')
+        fieldset
+          p.text-uppercase.pull-center Add a book
+          .form-group
+            input.form-control.input-lg(type='text' name='title' placeholder='Title' required)
+          .form-group
+            input.form-control.input-lg(type='text' name='author' placeholder='Author' required)
+          .form-group
+            input.form-control.input-lg(type='text' name='isbn' placeholder='ISBN' required)
+          .form-group
+            input.form-control.input-lg(type='number' name='price' placeholder='Price' min="1" step="any" required)
+          .form-group
+            textarea.form-control.input-lg(name='description' rows='4' cols='50' placeholder='Description' required)
+          .form-group
+            label Select cover image
+            input.form-control-file(type='file' name='cover' placeholder='Cover image' required)
+          div(class='mt-3')
+            input.btn.btn-primary(type='submit' value='Add Book')

@@ -20,8 +20,9 @@ router.get('/login', (req, res) => {
   });
 });
 
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
   res.clearCookie('jwtAccessToken');
+  res.status(204);
   res.redirect('/');
 });
 

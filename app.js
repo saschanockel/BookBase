@@ -12,12 +12,13 @@ const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const { httpLogger, logger } = require('./utils/winston');
-const getUserInfo = require('./middlewares/getUserInfo');
+const getUserInfo = require('./middlewares/get-user-info');
 
 // create routers
 const indexRouter = require('./routes');
 const customersRouter = require('./routes/customers');
 const sellersRouter = require('./routes/sellers');
+const booksRouter = require('./routes/books');
 
 // setup db connection
 createConnection({
@@ -57,6 +58,7 @@ app.use(getUserInfo);
 app.use('/', indexRouter);
 app.use('/customers', customersRouter);
 app.use('/sellers', sellersRouter);
+app.use('/books', booksRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

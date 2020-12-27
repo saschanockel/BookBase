@@ -8,19 +8,22 @@ module.exports = new EntitySchema({
       type: 'int',
       generated: true,
     },
-    iban: {
+    title: {
+      type: 'varchar',
+    },
+    author: {
+      type: 'varchar',
+    },
+    isbn: {
       type: 'varchar',
     },
     price: {
       type: 'double precision',
     },
-    title: {
-      type: 'varchar',
-    },
     description: {
-      type: 'varchar',
+      type: 'text',
     },
-    author: {
+    cover: {
       type: 'varchar',
     },
   },
