@@ -34,7 +34,7 @@ router.post('/register', validator.register(), (req, res) => {
       status: 409,
       message: 'Conflict',
       stack: error.stack,
-      title: 'Conflict ',
+      title: 'Conflict',
     });
   });
 });
@@ -57,7 +57,7 @@ router.post('/login', validator.login(), (req, res) => {
     .createQueryBuilder()
     .select(['customer.username', 'customer.email'])
     .from(Customer, 'customer')
-    .where('customer.username = :username AND customer.password = :password', { username: req.body.username, password: md5(req.body.username) })
+    .where('customer.username = :username AND customer.password = :password', { username: req.body.username, password: md5(req.body.password) })
     .getOneOrFail()
     .then((selectResult) => {
       res.clearCookie('jwtAccessToken');

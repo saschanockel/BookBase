@@ -21,15 +21,15 @@ html
               block shop
                 li(class='nav-item')
                   a(class='nav-link' href='/') Shop
-              if username
-                if isSeller
-                  a(class='nav-link' href='/books/manage') Manage my books
+                if user
+                  if user.isSeller
+                    a(class='nav-link' href='/books/manage') Manage my books
           block userInfo
-            if username
-              if isSeller
-                p(class='nav navbar-text mr-2') Logged in as Seller #{username} (#{email})
+            if user
+              if user.isSeller
+                p(class='nav navbar-text mr-2') Logged in as Seller #{user.username} (#{user.email})
               else
-                p(class='nav navbar-text mr-2') Logged in as Customer #{username} (#{email})
+                p(class='nav navbar-text mr-2') Logged in as Customer #{user.username} (#{user.email})
           block search
             form(class='form-inline my-2 my-lg-0')
               input(class='form-control mr-sm-2 bg-light' type='search' placeholder='Search' aria-label='Search')
