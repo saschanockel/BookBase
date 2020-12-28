@@ -10,6 +10,7 @@ router.get('/', (req, res) => {
     .createQueryBuilder()
     .select('book')
     .from(Book, 'book')
+    .leftJoinAndSelect('book.seller', 'Book')
     .addOrderBy('book.id', 'ASC')
     .getMany()
     .then((bookResult) => {

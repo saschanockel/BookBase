@@ -12,6 +12,7 @@ block content
               h4.title #{book.title}
               p.desc
                 != book.description
+              p.desc Sold by #{book.seller.username}
             .bottom-wrap
               a.btn.btn-sm.btn-primary.float-right(href='') Add to Cart
               .price-wrap.h5
@@ -25,6 +26,7 @@ block content
                 h4.title #{books[index + 1].title}
                 p.desc
                   != books[index + 1].description
+                p.desc Sold by #{book.seller.username}
               .bottom-wrap
                 a.btn.btn-sm.btn-primary.float-right(href='') Add to Cart
                 .price-wrap.h5
