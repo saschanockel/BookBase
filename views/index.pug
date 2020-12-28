@@ -1,5 +1,29 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  each book, index in books
+    if !(index % 2)
+      .row
+        .col-md-6
+          figure.card.card-product.p-3
+            .img-wrap
+              img(src=`/books/cover/${book.cover}` class='img-fluid rounded')
+            figcaption.info-wrap.mt-2
+              h4.title #{book.title}
+              p.desc #{book.description}
+            .bottom-wrap
+              a.btn.btn-sm.btn-primary.float-right(href='') Add to Cart
+              .price-wrap.h5
+                span.price-new #{book.price} €
+        if (index + 1 < books.length)
+          .col-md-6
+            figure.card.card-product.p-3
+              .img-wrap
+                img(src=`/books/cover/${books[index + 1].cover}` class='img-fluid rounded')
+              figcaption.info-wrap.mt-2
+                h4.title #{books[index + 1].title}
+                p.desc #{books[index + 1].description}
+              .bottom-wrap
+                a.btn.btn-sm.btn-primary.float-right(href='') Add to Cart
+                .price-wrap.h5
+                  span.price-new #{books[index + 1].price} €

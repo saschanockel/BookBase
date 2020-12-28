@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 class BooksValidator {
   static add() {
@@ -28,7 +28,7 @@ class BooksValidator {
 
   static update() {
     return [
-      body('id')
+      query('id')
         .isInt()
         .exists(),
       body('title')
@@ -56,7 +56,7 @@ class BooksValidator {
 
   static delete() {
     return [
-      body('id')
+      query('id')
         .isInt()
         .exists(),
     ];

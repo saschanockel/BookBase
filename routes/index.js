@@ -1,11 +1,32 @@
 const express = require('express');
+const { getConnection } = require('typeorm');
+const Book = require('../entities/book');
+const { logger } = require('../utils/winston');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.render('index', {
-    title: 'BookBase', user: res.locals.user,
-  });
+  getConnection()
+    .createQueryBuilder()
+    .select('book')
+    .from(Book, 'book')
+    .addOrderBy('book.id', 'ASC')
+    .getMany()
+    .then((bookResult) => {
+      res.render('index', {
+        title: 'BookBase', user: res.locals.user, books: bookResult,
+      });
+    })
+    .catch((error) => {
+      logger.error(`Error while getting shop listing ${error.stack}`);
+      res.status(500);
+      res.render('error', {
+        status: 500,
+        message: 'Internal Server Error',
+        stack: error.stack,
+        title: 'Internal Server Error',
+      });
+    });
 });
 
 router.get('/register', (req, res) => {

@@ -21,3 +21,33 @@ block content
             input.form-control-file(type='file' name='cover' placeholder='Cover image' required)
           div(class='mt-3')
             input.btn.btn-primary(type='submit' value='Add Book')
+  hr(class='my-3')
+  if books
+    each book in books
+      .row.mb-5
+        .col-md-6.mx-auto
+          form(id=`updateBookForm${book.id}` role='form' method='post' action=`/books/update?id=${book.id}&_method=PUT` enctype='multipart/form-data')
+            fieldset
+              p.text-uppercase.pull-center Edit Book
+              .form-group
+                input.form-control.input-lg(type='text' name='title' placeholder='Title' value=book.title required)
+              .form-group
+                input.form-control.input-lg(type='text' name='author' placeholder='Author' value=book.author required)
+              .form-group
+                input.form-control.input-lg(type='text' name='isbn' placeholder='ISBN' value=book.isbn required)
+              .form-group
+                input.form-control.input-lg(type='number' name='price' placeholder='Price' min="1" step="any" value=book.price required)
+              .form-group
+                textarea.form-control.input-lg(name='description' rows='4' cols='50' placeholder='Description' required) #{book.description}
+              .form-group
+                label Select cover image
+                input.form-control-file(type='file' name='cover' placeholder='Cover image')
+          div
+            .row
+              .col-3
+                input.btn.btn-primary(type='submit' value='Update' form=`updateBookForm${book.id}`)
+              .col-3
+                form(role='form' method='post' action=`/books/delete?id=${book.id}&_method=DELETE` enctype='form-data')
+                  input.btn.btn-danger(type='submit' value='Delete')
+        .col-md-3.mx-auto.mt-5
+          img(src=`/books/cover/${book.cover}` class='img-fluid')

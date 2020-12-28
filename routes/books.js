@@ -8,6 +8,7 @@ const os = require('os');
 const validator = require('./validators/books');
 const { logger } = require('../utils/winston');
 const Seller = require('../entities/seller');
+const Book = require('../entities/book');
 
 // configure multer
 const upload = multer({ dest: os.tmpdir() });
@@ -21,10 +22,29 @@ router.get('/manage', (req, res) => {
     .from(Seller, 'seller')
     .where('seller.username = :username', { username: res.locals.user.username })
     .getOneOrFail()
-    .then(() => {
-      res.render('./books/manage', {
-        title: 'BookBase | Manage my books', user: res.locals.user,
-      });
+    .then((sellerResult) => {
+      getConnection()
+        .createQueryBuilder()
+        .select('book')
+        .from(Book, 'book')
+        .where('book.seller = :seller', { seller: sellerResult.id })
+        .addOrderBy('book.id', 'ASC')
+        .getMany()
+        .then((bookResult) => {
+          res.render('./books/manage', {
+            title: 'BookBase | Manage my books', user: res.locals.user, books: bookResult,
+          });
+        })
+        .catch((error) => {
+          logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
+          res.status(401);
+          res.render('error', {
+            status: 401,
+            message: 'Unauthorized',
+            stack: error.stack,
+            title: 'Unauthorized',
+          });
+        });
     })
     .catch((error) => {
       logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
@@ -149,7 +169,7 @@ router.put('/update', upload.single('cover'), validator.update(), (req, res) => 
             price: req.body.price,
             description: req.body.description,
           })
-          .where('id = :id AND seller = :seller', { id: req.query.id, seller: selectResult.id })
+          .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
           .execute()
           .then(() => {
             res.status(200);
@@ -177,7 +197,7 @@ router.put('/update', upload.single('cover'), validator.update(), (req, res) => 
             description: req.body.description,
             cover: req.file.filename,
           })
-          .where('id = :id AND seller = :seller', { id: req.query.id, seller: selectResult.id })
+          .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
           .execute()
           .then(() => {
             fs.move(req.file.path, path.join(__dirname, '..', 'public', 'books', 'cover', req.file.filename))
@@ -235,7 +255,7 @@ router.delete('/delete', validator.delete(), (req, res) => {
         .createQueryBuilder()
         .delete()
         .from('Book')
-        .where('id = :id AND seller = :seller', { id: req.query.id, seller: selectResult.id })
+        .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
         .execute()
         .then(() => {
           res.status(200);
