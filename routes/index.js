@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
     .getMany()
     .then((bookResult) => {
       res.render('index', {
-        title: 'BookBase', user: res.locals.user, books: bookResult,
+        title: 'BookBase | Shop', user: res.locals.user, books: bookResult,
       });
     })
     .catch((error) => {

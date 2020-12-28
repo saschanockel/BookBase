@@ -16,7 +16,7 @@ block content
             .bottom-wrap
               a.btn.btn-sm.btn-primary.float-right(href='') Add to Cart
               .price-wrap.h5
-                span.price-new #{book.price} €
+                span.price-new #{book.price}€
         if (index + 1 < books.length)
           .col-md-6
             figure.card.card-product.p-3
@@ -26,8 +26,8 @@ block content
                 h4.title #{books[index + 1].title}
                 p.desc
                   != books[index + 1].description
-                p.desc Sold by #{book.seller.username}
+                p.desc Sold by #{books[index + 1].seller.username}
               .bottom-wrap
                 a.btn.btn-sm.btn-primary.float-right(href='') Add to Cart
                 .price-wrap.h5
-                  span.price-new #{books[index + 1].price} €
+                  span.price-new #{books[index + 1].price}€
