@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
     .select('book')
     .from(Book, 'book')
     .leftJoinAndSelect('book.seller', 'Book')
-    .addOrderBy('book.id', 'ASC')
+    .addOrderBy('book.id', 'DESC')
     .getMany()
     .then((bookResult) => {
       res.render('index', {

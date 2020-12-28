@@ -1,7 +1,7 @@
 extends ../layout
 
 block content
-  h3 Dear SSE hackers, please do not upload huge pictures, just keep it under 1mb if possible
+  h3 Dear SSE hackers, please do not upload huge pictures, just keep it under 1mb if possible, also keep it family friendly
   .row
     .col-md-6.mx-auto
       form#addBookForm(role='form' method='post' action='/books/add' enctype='multipart/form-data')
@@ -51,4 +51,4 @@ block content
                 form(role='form' method='post' action=`/books/delete?id=${book.id}&_method=DELETE` enctype='form-data')
                   input.btn.btn-danger(type='submit' value='Delete')
         .col-md-3.mx-auto.mt-5
-          img(src=`/books/cover/${book.id}` class='img-fluid')
+          img(src=`/uploads/cover/${book.id}` class='img-fluid')

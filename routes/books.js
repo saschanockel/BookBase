@@ -28,7 +28,7 @@ router.get('/manage', (req, res) => {
         .select('book')
         .from(Book, 'book')
         .where('book.seller = :seller', { seller: sellerResult.id })
-        .addOrderBy('book.id', 'ASC')
+        .addOrderBy('book.id', 'DESC')
         .getMany()
         .then((bookResult) => {
           res.render('./books/manage', {
@@ -107,7 +107,7 @@ router.post('/add', upload.single('cover'), validator.add(), (req, res) => {
         .returning('id')
         .execute()
         .then((insertResult) => {
-          fs.move(req.file.path, path.join(__dirname, '..', 'public', 'books', 'cover', insertResult.generatedMaps[0].id.toString()))
+          fs.move(req.file.path, path.join(__dirname, '..', 'public', 'uploads', 'cover', insertResult.generatedMaps[0].id.toString()))
             .then(() => {
               res.status(201);
               res.redirect('/books/manage');
@@ -199,7 +199,7 @@ router.put('/update', upload.single('cover'), validator.update(), (req, res) => 
           .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
           .execute()
           .then(() => {
-            fs.move(req.file.path, path.join(__dirname, '..', 'public', 'books', 'cover', req.query.id), { overwrite: true })
+            fs.move(req.file.path, path.join(__dirname, '..', 'public', 'uploads', 'cover', req.query.id), { overwrite: true })
               .then(() => {
                 res.status(200);
                 res.redirect('/books/manage');
@@ -257,7 +257,7 @@ router.delete('/delete', validator.delete(), (req, res) => {
         .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
         .execute()
         .then(() => {
-          fs.remove(path.join(__dirname, '..', 'public', 'books', 'cover', req.query.id))
+          fs.remove(path.join(__dirname, '..', 'public', 'uploads', 'cover', req.query.id))
             .then(() => {
               res.status(200);
               res.redirect('/books/manage');

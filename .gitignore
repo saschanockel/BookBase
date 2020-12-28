@@ -108,4 +108,4 @@ dist
 
 # Resource directories
 uploads/*
-public/books/*
+public/uploads/*
