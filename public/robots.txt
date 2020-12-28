@@ -1,1 +1,4 @@
-text
+User-Agent: *
+Disallow: /todo.md
+Disallow: /books
+
