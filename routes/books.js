@@ -101,13 +101,13 @@ router.post('/add', upload.single('cover'), validator.add(), (req, res) => {
             isbn: req.body.isbn,
             price: req.body.price,
             description: req.body.description,
-            cover: req.file.filename,
             seller: selectResult.id,
           },
         ])
+        .returning('id')
         .execute()
-        .then(() => {
-          fs.move(req.file.path, path.join(__dirname, '..', 'public', 'books', 'cover', req.file.filename))
+        .then((insertResult) => {
+          fs.move(req.file.path, path.join(__dirname, '..', 'public', 'books', 'cover', insertResult.generatedMaps[0].id.toString()))
             .then(() => {
               res.status(201);
               res.redirect('/books/manage');
@@ -195,12 +195,11 @@ router.put('/update', upload.single('cover'), validator.update(), (req, res) => 
             isbn: req.body.isbn,
             price: req.body.price,
             description: req.body.description,
-            cover: req.file.filename,
           })
           .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
           .execute()
           .then(() => {
-            fs.move(req.file.path, path.join(__dirname, '..', 'public', 'books', 'cover', req.file.filename))
+            fs.move(req.file.path, path.join(__dirname, '..', 'public', 'books', 'cover', req.query.id), { overwrite: true })
               .then(() => {
                 res.status(200);
                 res.redirect('/books/manage');
@@ -258,8 +257,11 @@ router.delete('/delete', validator.delete(), (req, res) => {
         .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
         .execute()
         .then(() => {
-          res.status(200);
-          res.redirect('/books/manage');
+          fs.remove(path.join(__dirname, '..', 'public', 'books', 'cover', req.query.id))
+            .then(() => {
+              res.status(200);
+              res.redirect('/books/manage');
+            });
         });
     })
     .catch((error) => {

@@ -23,9 +23,6 @@ module.exports = new EntitySchema({
     description: {
       type: 'text',
     },
-    cover: {
-      type: 'varchar',
-    },
   },
   relations: {
     bookOrder: {

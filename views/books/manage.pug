@@ -50,4 +50,4 @@ block content
                 form(role='form' method='post' action=`/books/delete?id=${book.id}&_method=DELETE` enctype='form-data')
                   input.btn.btn-danger(type='submit' value='Delete')
         .col-md-3.mx-auto.mt-5
-          img(src=`/books/cover/${book.cover}` class='img-fluid')
+          img(src=`/books/cover/${book.id}` class='img-fluid')
