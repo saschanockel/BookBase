@@ -61,6 +61,13 @@ class BooksValidator {
         .exists(),
     ];
   }
+
+  static cover() {
+    return [
+      query('file')
+        .exists(),
+    ];
+  }
 }
 
 module.exports = BooksValidator;

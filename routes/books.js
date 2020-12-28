@@ -5,15 +5,56 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs-extra');
 const os = require('os');
+const mmm = require('mmmagic');
+const mime = require('mime-types');
 const validator = require('./validators/books');
 const { logger } = require('../utils/winston');
 const Seller = require('../entities/seller');
 const Book = require('../entities/book');
 
+const { Magic } = mmm;
+const magic = new Magic(mmm.MAGIC_MIME_TYPE);
+
 // configure multer
 const upload = multer({ dest: os.tmpdir() });
 
 const router = express.Router();
+
+router.get('/cover', validator.cover(), (req, res) => {
+  const errors = validationResult(req);
+  // if inputs are not valid return array of errors
+  if (!errors.isEmpty()) {
+    logger.error(`Invalid GET request to /books${req.path} from ${req.ip} produced the following errors ${JSON.stringify(errors.array())}`);
+    res.status(422);
+    res.render('error', {
+      status: 422,
+      message: 'Invalid query parameter',
+      stack: JSON.stringify(errors.array()),
+      title: 'Invalid query parameter',
+    });
+  }
+
+  if (path.extname(`${__dirname}/../public/uploads/cover/${req.query.file}`)) {
+    res.download(`${__dirname}/../public/uploads/cover/${req.query.file}`);
+  } else {
+    magic.detectFile(`${__dirname}/../public/uploads/cover/${req.query.file}`, (err, result) => {
+      if (err) {
+        logger.error(`Invalid GET request to /books${req.path} from ${req.ip} ${err.stack}`);
+        res.status(404);
+        res.render('error', {
+          status: 404,
+          message: 'Not Found',
+          stack: err.stack,
+          title: 'Not Found',
+        });
+      } else {
+        const filePath = `${__dirname}/../public/uploads/cover/${req.query.file}`;
+        const filename = `${filePath.substring(filePath.lastIndexOf('/') + 1)}.${mime.extension(result)}`;
+        res.download(`${__dirname}/../public/uploads/cover/${req.query.file}`, filename);
+      }
+    });
+  }
+});
 
 router.get('/manage', (req, res) => {
   getConnection()

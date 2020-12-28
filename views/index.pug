@@ -9,7 +9,9 @@ block content
             .img-wrap
               img(src=`/uploads/cover/${book.id}` class='img-fluid rounded')
             figcaption.info-wrap.mt-2
-              h4.title #{book.title}
+              .row
+                h4.title.col-auto #{book.title}
+                a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${book.id}`) Download Cover
               p.desc
                 != book.description
               p.desc Sold by #{book.seller.username}
@@ -23,7 +25,9 @@ block content
               .img-wrap
                 img(src=`/uploads/cover/${books[index + 1].id}` class='img-fluid rounded')
               figcaption.info-wrap.mt-2
-                h4.title #{books[index + 1].title}
+                .row
+                  h4.title.col-auto #{books[index + 1].title}
+                  a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${books[index + 1].id}`) Download Cover
                 p.desc
                   != books[index + 1].description
                 p.desc Sold by #{books[index + 1].seller.username}
