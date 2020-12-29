@@ -110,6 +110,29 @@ class CustomersValidator {
         .exists(),
     ];
   }
+
+  static forgotPassword() {
+    return [
+      body('username')
+        .isString()
+        .exists(),
+      body('securityAnswer')
+        .isString()
+        .isLength({ min: 1, max: 32 })
+        .exists(),
+      body('password')
+        .isString()
+        .isLength({ min: 8, max: 32 })
+        .custom((value, { req }) => {
+          if (value !== req.body.confirmPassword) {
+            throw new Error('Passwords do not match');
+          } else {
+            return value;
+          }
+        })
+        .exists(),
+    ];
+  }
 }
 
 module.exports = CustomersValidator;
