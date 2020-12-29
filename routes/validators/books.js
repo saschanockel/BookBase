@@ -65,6 +65,7 @@ class BooksValidator {
   static cover() {
     return [
       query('file')
+        .isLength({ min: 1 })
         .exists(),
     ];
   }
@@ -72,6 +73,7 @@ class BooksValidator {
   static search() {
     return [
       query('query')
+        .isLength({ min: 1 })
         .exists(),
     ];
   }

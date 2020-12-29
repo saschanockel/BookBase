@@ -32,37 +32,37 @@ router.get('/search', validator.search(), (req, res) => {
       stack: JSON.stringify(errors.array()),
       title: 'Invalid query parameter',
     });
-  }
-
-  getConnection()
-    .createQueryBuilder()
-    .select('book')
-    .from(Book, 'book')
-    .leftJoinAndSelect('book.seller', 'Book')
-    .where('book.title LIKE :title', { title: `%${req.query.query}%` })
-    .addOrderBy('book.id', 'DESC')
-    .getMany()
-    .then((bookResult) => {
-      if (bookResult.length !== 0) {
-        res.render('index', {
-          title: 'BookBase | Search', user: res.locals.user, books: bookResult,
+  } else {
+    getConnection()
+      .createQueryBuilder()
+      .select('book')
+      .from(Book, 'book')
+      .leftJoinAndSelect('book.seller', 'Book')
+      .where('book.title LIKE :title', { title: `%${req.query.query}%` })
+      .addOrderBy('book.id', 'DESC')
+      .getMany()
+      .then((bookResult) => {
+        if (bookResult.length !== 0) {
+          res.render('index', {
+            title: 'BookBase | Search', user: res.locals.user, books: bookResult,
+          });
+        } else {
+          res.render('index', {
+            title: 'BookBase | Search', user: res.locals.user, message: `No books found for search term "${req.query.query}"`,
+          });
+        }
+      })
+      .catch((error) => {
+        logger.error(`Error while getting shop listing ${error.stack}`);
+        res.status(500);
+        res.render('error', {
+          status: 500,
+          message: 'Internal Server Error',
+          stack: error.stack,
+          title: 'Internal Server Error',
         });
-      } else {
-        res.render('index', {
-          title: 'BookBase | Search', user: res.locals.user, message: `No books found for search term "${req.query.query}"`,
-        });
-      }
-    })
-    .catch((error) => {
-      logger.error(`Error while getting shop listing ${error.stack}`);
-      res.status(500);
-      res.render('error', {
-        status: 500,
-        message: 'Internal Server Error',
-        stack: error.stack,
-        title: 'Internal Server Error',
       });
-    });
+  }
 });
 
 router.get('/cover', validator.cover(), (req, res) => {
@@ -77,9 +77,7 @@ router.get('/cover', validator.cover(), (req, res) => {
       stack: JSON.stringify(errors.array()),
       title: 'Invalid query parameter',
     });
-  }
-
-  if (path.extname(`${__dirname}/../public/uploads/cover/${req.query.file}`)) {
+  } else if (path.extname(`${__dirname}/../public/uploads/cover/${req.query.file}`)) {
     res.download(`${__dirname}/../public/uploads/cover/${req.query.file}`);
   } else {
     magic.detectFile(`${__dirname}/../public/uploads/cover/${req.query.file}`, (err, result) => {
@@ -156,10 +154,8 @@ router.post('/add', upload.single('cover'), validator.add(), (req, res) => {
       stack: JSON.stringify(errors.array()),
       title: 'Invalid form input',
     });
-  }
-
-  // if no cover was uploaded return error
-  if (!req.file) {
+  } else if (!req.file) {
+    // if no cover was uploaded return error
     logger.error(`Invalid POST request to /books${req.path} from ${req.ip} no cover was provided`);
     res.status(400);
     res.render('error', {
@@ -167,59 +163,59 @@ router.post('/add', upload.single('cover'), validator.add(), (req, res) => {
       message: 'No cover provided',
       title: 'No cover provided',
     });
-  }
-
-  getConnection()
-    .createQueryBuilder()
-    .select(['seller.id'])
-    .from(Seller, 'seller')
-    .where('seller.username = :username', { username: res.locals.user.username })
-    .getOneOrFail()
-    .then((selectResult) => {
-      getConnection()
-        .createQueryBuilder()
-        .insert()
-        .into('Book')
-        .values([
-          {
-            title: req.body.title,
-            author: req.body.author,
-            isbn: req.body.isbn,
-            price: req.body.price,
-            description: req.body.description,
-            seller: selectResult.id,
-          },
-        ])
-        .returning('id')
-        .execute()
-        .then((insertResult) => {
-          fs.move(req.file.path, path.join(__dirname, '..', 'public', 'uploads', 'cover', insertResult.generatedMaps[0].id.toString()))
-            .then(() => {
-              res.status(201);
-              res.redirect('/books/manage');
+  } else {
+    getConnection()
+      .createQueryBuilder()
+      .select(['seller.id'])
+      .from(Seller, 'seller')
+      .where('seller.username = :username', { username: res.locals.user.username })
+      .getOneOrFail()
+      .then((selectResult) => {
+        getConnection()
+          .createQueryBuilder()
+          .insert()
+          .into('Book')
+          .values([
+            {
+              title: req.body.title,
+              author: req.body.author,
+              isbn: req.body.isbn,
+              price: req.body.price,
+              description: req.body.description,
+              seller: selectResult.id,
+            },
+          ])
+          .returning('id')
+          .execute()
+          .then((insertResult) => {
+            fs.move(req.file.path, path.join(__dirname, '..', 'public', 'uploads', 'cover', insertResult.generatedMaps[0].id.toString()))
+              .then(() => {
+                res.status(201);
+                res.redirect('/books/manage');
+              });
+          })
+          .catch((error) => {
+            logger.error(`Invalid POST request to /books${req.path} from ${req.ip} ${error.stack}`);
+            res.status(500);
+            res.render('error', {
+              status: 500,
+              message: 'Internal Server Error',
+              stack: error.stack,
+              title: 'Internal Server Error',
             });
-        })
-        .catch((error) => {
-          logger.error(`Invalid POST request to /books${req.path} from ${req.ip} ${error.stack}`);
-          res.status(500);
-          res.render('error', {
-            status: 500,
-            message: 'Internal Server Error',
-            stack: error.stack,
-            title: 'Internal Server Error',
           });
+      })
+      .catch((error) => {
+        logger.error(`Invalid POST request to /books${req.path} from ${req.ip} ${error.stack}`);
+        res.status(401);
+        res.render('error', {
+          status: 401,
+          message: 'Unauthorized',
+          stack: error.stack,
+          title: 'Unauthorized',
         });
-    })
-    .catch((error) => {
-      logger.error(`Invalid POST request to /books${req.path} from ${req.ip} ${error.stack}`);
-      res.status(401);
-      res.render('error', {
-        status: 401,
-        message: 'Unauthorized',
-        stack: error.stack,
-        title: 'Unauthorized',
       });
-    });
+  }
 });
 
 router.put('/update', upload.single('cover'), validator.update(), (req, res) => {
@@ -234,85 +230,85 @@ router.put('/update', upload.single('cover'), validator.update(), (req, res) => 
       stack: JSON.stringify(errors.array()),
       title: 'Invalid form input',
     });
-  }
-
-  // if no cover was uploaded only update book attributes
-  getConnection()
-    .createQueryBuilder()
-    .select(['seller.id'])
-    .from(Seller, 'seller')
-    .where('seller.username = :username', { username: res.locals.user.username })
-    .getOneOrFail()
-    .then((selectResult) => {
-      if (!req.file) {
-        getConnection()
-          .createQueryBuilder()
-          .update('Book')
-          .set({
-            title: req.body.title,
-            author: req.body.author,
-            isbn: req.body.isbn,
-            price: req.body.price,
-            description: req.body.description,
-          })
-          .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
-          .execute()
-          .then(() => {
-            res.status(200);
-            res.redirect('/books/manage');
-          })
-          .catch((error) => {
-            logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
-            res.status(304);
-            res.render('error', {
-              status: 304,
-              message: 'Not Modified',
-              stack: error.stack,
-              title: 'Not Modified',
-            });
-          });
-      } else {
-        getConnection()
-          .createQueryBuilder()
-          .update('Book')
-          .set({
-            title: req.body.title,
-            author: req.body.author,
-            isbn: req.body.isbn,
-            price: req.body.price,
-            description: req.body.description,
-          })
-          .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
-          .execute()
-          .then(() => {
-            fs.move(req.file.path, path.join(__dirname, '..', 'public', 'uploads', 'cover', req.query.id), { overwrite: true })
-              .then(() => {
-                res.status(200);
-                res.redirect('/books/manage');
+  } else {
+    getConnection()
+      .createQueryBuilder()
+      .select(['seller.id'])
+      .from(Seller, 'seller')
+      .where('seller.username = :username', { username: res.locals.user.username })
+      .getOneOrFail()
+      .then((selectResult) => {
+        // if no cover was uploaded only update book attributes
+        if (!req.file) {
+          getConnection()
+            .createQueryBuilder()
+            .update('Book')
+            .set({
+              title: req.body.title,
+              author: req.body.author,
+              isbn: req.body.isbn,
+              price: req.body.price,
+              description: req.body.description,
+            })
+            .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
+            .execute()
+            .then(() => {
+              res.status(200);
+              res.redirect('/books/manage');
+            })
+            .catch((error) => {
+              logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
+              res.status(304);
+              res.render('error', {
+                status: 304,
+                message: 'Not Modified',
+                stack: error.stack,
+                title: 'Not Modified',
               });
-          })
-          .catch((error) => {
-            logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
-            res.status(304);
-            res.render('error', {
-              status: 304,
-              message: 'Not Modified',
-              stack: error.stack,
-              title: 'Not Modified',
             });
-          });
-      }
-    })
-    .catch((error) => {
-      logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
-      res.status(401);
-      res.render('error', {
-        status: 401,
-        message: 'Unauthorized',
-        stack: error.stack,
-        title: 'Unauthorized',
+        } else {
+          getConnection()
+            .createQueryBuilder()
+            .update('Book')
+            .set({
+              title: req.body.title,
+              author: req.body.author,
+              isbn: req.body.isbn,
+              price: req.body.price,
+              description: req.body.description,
+            })
+            .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
+            .execute()
+            .then(() => {
+              fs.move(req.file.path, path.join(__dirname, '..', 'public', 'uploads', 'cover', req.query.id), { overwrite: true })
+                .then(() => {
+                  res.status(200);
+                  res.redirect('/books/manage');
+                });
+            })
+            .catch((error) => {
+              logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
+              res.status(304);
+              res.render('error', {
+                status: 304,
+                message: 'Not Modified',
+                stack: error.stack,
+                title: 'Not Modified',
+              });
+            });
+        }
+      })
+      .catch((error) => {
+        logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
+        res.status(401);
+        res.render('error', {
+          status: 401,
+          message: 'Unauthorized',
+          stack: error.stack,
+          title: 'Unauthorized',
+        });
       });
-    });
+  }
 });
 
 router.delete('/delete', validator.delete(), (req, res) => {
@@ -327,39 +323,39 @@ router.delete('/delete', validator.delete(), (req, res) => {
       stack: JSON.stringify(errors.array()),
       title: 'Invalid query parameter',
     });
-  }
-
-  getConnection()
-    .createQueryBuilder()
-    .select(['seller.id'])
-    .from(Seller, 'seller')
-    .where('seller.username = :username', { username: res.locals.user.username })
-    .getOneOrFail()
-    .then((selectResult) => {
-      getConnection()
-        .createQueryBuilder()
-        .delete()
-        .from('Book')
-        .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
-        .execute()
-        .then(() => {
-          fs.remove(path.join(__dirname, '..', 'public', 'uploads', 'cover', req.query.id))
-            .then(() => {
-              res.status(200);
-              res.redirect('/books/manage');
-            });
+  } else {
+    getConnection()
+      .createQueryBuilder()
+      .select(['seller.id'])
+      .from(Seller, 'seller')
+      .where('seller.username = :username', { username: res.locals.user.username })
+      .getOneOrFail()
+      .then((selectResult) => {
+        getConnection()
+          .createQueryBuilder()
+          .delete()
+          .from('Book')
+          .where('id = :id AND seller = :seller', { id: parseInt(req.query.id, 10), seller: selectResult.id })
+          .execute()
+          .then(() => {
+            fs.remove(path.join(__dirname, '..', 'public', 'uploads', 'cover', req.query.id))
+              .then(() => {
+                res.status(200);
+                res.redirect('/books/manage');
+              });
+          });
+      })
+      .catch((error) => {
+        logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
+        res.status(401);
+        res.render('error', {
+          status: 401,
+          message: 'Unauthorized',
+          stack: error.stack,
+          title: 'Unauthorized',
         });
-    })
-    .catch((error) => {
-      logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
-      res.status(401);
-      res.render('error', {
-        status: 401,
-        message: 'Unauthorized',
-        stack: error.stack,
-        title: 'Unauthorized',
       });
-    });
+  }
 });
 
 module.exports = router;

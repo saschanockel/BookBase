@@ -51,29 +51,29 @@ router.post('/login', validator.login(), (req, res) => {
       stack: JSON.stringify(errors.array()),
       title: 'Invalid form input',
     });
-  }
-
-  getConnection()
-    .createQueryBuilder()
-    .select(['customer.username', 'customer.email'])
-    .from(Customer, 'customer')
-    .where('customer.username = :username AND customer.password = :password', { username: req.body.username, password: md5(req.body.password) })
-    .getOneOrFail()
-    .then((selectResult) => {
-      res.clearCookie('jwtAccessToken');
-      res.cookie('jwtAccessToken', jwt.sign({ username: selectResult.username, email: selectResult.email, isSeller: false }, process.env.JWT_SECRET));
-      res.redirect(200, '/');
-    })
-    .catch((error) => {
-      logger.error(`Invalid POST request to /customers${req.path} from ${req.ip} ${error.stack}`);
-      res.status(401);
-      res.render('error', {
-        status: 401,
-        message: 'Unauthorized',
-        stack: error.stack,
-        title: 'Unauthorized',
+  } else {
+    getConnection()
+      .createQueryBuilder()
+      .select(['customer.username', 'customer.email'])
+      .from(Customer, 'customer')
+      .where('customer.username = :username AND customer.password = :password', { username: req.body.username, password: md5(req.body.password) })
+      .getOneOrFail()
+      .then((selectResult) => {
+        res.clearCookie('jwtAccessToken');
+        res.cookie('jwtAccessToken', jwt.sign({ username: selectResult.username, email: selectResult.email, isSeller: false }, process.env.JWT_SECRET));
+        res.redirect(200, '/');
+      })
+      .catch((error) => {
+        logger.error(`Invalid POST request to /customers${req.path} from ${req.ip} ${error.stack}`);
+        res.status(401);
+        res.render('error', {
+          status: 401,
+          message: 'Unauthorized',
+          stack: error.stack,
+          title: 'Unauthorized',
+        });
       });
-    });
+  }
 });
 
 module.exports = router;
