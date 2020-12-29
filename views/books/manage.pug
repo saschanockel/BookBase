@@ -8,15 +8,15 @@ block content
         fieldset
           p.text-uppercase.pull-center Add a book
           .form-group
-            input.form-control.input-lg(type='text' name='title' placeholder='Title' required)
+            input.form-control.input-lg(type='text' name='title' placeholder='Title' minlength='1' maxlength='64' required)
           .form-group
-            input.form-control.input-lg(type='text' name='author' placeholder='Author' required)
+            input.form-control.input-lg(type='text' name='author' placeholder='Author' minlength='1' maxlength='64' required)
           .form-group
-            input.form-control.input-lg(type='text' name='isbn' placeholder='ISBN' required)
+            input.form-control.input-lg(type='text' name='isbn' placeholder='ISBN' minlength='1' maxlength='64' required)
           .form-group
-            input.form-control.input-lg(type='number' name='price' placeholder='Price' min="1" step="any" required)
+            input.form-control.input-lg(type='number' name='price' placeholder='Price' min="1" maxlength='8' step="any" required)
           .form-group
-            textarea.form-control.input-lg(name='description' rows='4' cols='50' placeholder='Description' required)
+            textarea.form-control.input-lg(name='description' rows='4' cols='50' placeholder='Description' minlength='1' maxlength='1024' required)
           .form-group
             label Select cover image
             input.form-control-file(type='file' name='cover' placeholder='Cover image' required)
@@ -31,15 +31,15 @@ block content
             fieldset
               p.text-uppercase.pull-center Edit Book
               .form-group
-                input.form-control.input-lg(type='text' name='title' placeholder='Title' value=book.title required)
+                input.form-control.input-lg(type='text' name='title' placeholder='Title' minlength='1' maxlength='64' value=book.title required)
               .form-group
-                input.form-control.input-lg(type='text' name='author' placeholder='Author' value=book.author required)
+                input.form-control.input-lg(type='text' name='author' placeholder='Author' minlength='1' maxlength='64' value=book.author required)
               .form-group
-                input.form-control.input-lg(type='text' name='isbn' placeholder='ISBN' value=book.isbn required)
+                input.form-control.input-lg(type='text' name='isbn' placeholder='ISBN' minlength='1' maxlength='64' value=book.isbn required)
               .form-group
-                input.form-control.input-lg(type='number' name='price' placeholder='Price' min="1" step="any" value=book.price required)
+                input.form-control.input-lg(type='number' name='price' placeholder='Price' min="1" maxlength='8' step="any" value=book.price required)
               .form-group
-                textarea.form-control.input-lg(name='description' rows='4' cols='50' placeholder='Description' required) #{book.description}
+                textarea.form-control.input-lg(name='description' rows='4' cols='50' placeholder='Description' minlength='1' maxlength='1024' required) #{book.description}
               .form-group
                 label Select cover image
                 input.form-control-file(type='file' name='cover' placeholder='Cover image')

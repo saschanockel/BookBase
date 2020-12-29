@@ -5,7 +5,7 @@ class BooksValidator {
     return [
       body('title')
         .isString()
-        .isLength({ min: 3, max: 64 })
+        .isLength({ min: 1, max: 64 })
         .exists(),
       body('author')
         .isString()
@@ -33,7 +33,7 @@ class BooksValidator {
         .exists(),
       body('title')
         .isString()
-        .isLength({ min: 3, max: 64 })
+        .isLength({ min: 1, max: 64 })
         .optional(),
       body('author')
         .isString()
