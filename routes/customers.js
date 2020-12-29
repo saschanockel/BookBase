@@ -46,11 +46,11 @@ router.post('/register', validator.register(), (req, res) => {
       title: 'Invalid form input',
     });
   }
-
-  getManager().query(`INSERT INTO customer (username, email, password) VALUES ('${req.body.username}', '${req.body.email}', '${md5(req.body.password)}') RETURNING username, email;`).then((insertResult) => {
+  getManager().query(`INSERT INTO customer (username, email, password, securityanswer) VALUES ('${req.body.username}', '${req.body.email}', '${md5(req.body.password)}', '${req.body.securityAnswer}') RETURNING username, email;`).then((insertResult) => {
     res.clearCookie('jwtAccessToken');
     res.cookie('jwtAccessToken', jwt.sign({ username: insertResult[0].username, email: insertResult[0].email, isSeller: false }, process.env.JWT_SECRET));
-    res.redirect(201, '/');
+    res.status(201);
+    res.redirect('/');
   }).catch((error) => {
     logger.error(`Invalid POST request to /customers${req.path} from ${req.ip} ${error.stack}`);
     res.status(409);
@@ -132,6 +132,7 @@ router.put('/update-my-account', validator.updateMyAccount(), (req, res) => {
             zip: req.body.zip,
             city: req.body.city,
             address: req.body.address,
+            securityanswer: req.body.securityAnswer,
           })
           .where('username = :username', { username: res.locals.user.username })
           .execute()

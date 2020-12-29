@@ -13,9 +13,12 @@ block content
           .form-group
             input#signUpConfirmEmail.form-control.input-lg(type='email' name='confirmEmail' placeholder='Confirm E-Mail Address' required)
           .form-group
-            input#signUpPassword.form-control.input-lg(type='password' name='password' placeholder='Password' required)
+            input#signUpPassword.form-control.input-lg(type='password' name='password' placeholder='Password' minlength='8' maxlength='32' required)
           .form-group
-            input#signUpConfirmPassword.form-control.input-lg(type='password' name='confirmPassword' placeholder='Confirm Password' required)
+            input#signUpConfirmPassword.form-control.input-lg(type='password' name='confirmPassword' placeholder='Confirm Password' minlength='8' maxlength='32' required)
+          .form-group
+            p What is your favorite image editing program?
+            input#signUpSecurityAnswer.form-control.input-lg(type='text' name='securityAnswer' placeholder='Security question answer' required)
           .form-check
             label.form-check-label
               input#sellerCheckbox.form-check-input(type='checkbox')

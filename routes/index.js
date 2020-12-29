@@ -14,9 +14,15 @@ router.get('/', (req, res) => {
     .addOrderBy('book.id', 'DESC')
     .getMany()
     .then((bookResult) => {
-      res.render('index', {
-        title: 'BookBase | Shop', user: res.locals.user, books: bookResult,
-      });
+      if (bookResult.length !== 0) {
+        res.render('index', {
+          title: 'BookBase | Shop', user: res.locals.user, books: bookResult,
+        });
+      } else {
+        res.render('index', {
+          title: 'BookBase | Shop', user: res.locals.user, message: 'No books yet, be the first to sell some!',
+        });
+      }
     })
     .catch((error) => {
       logger.error(`Error while getting shop listing ${error.stack}`);

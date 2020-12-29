@@ -33,7 +33,7 @@ class CustomersValidator {
         .exists(),
       body('password')
         .isString()
-        .isLength({ min: 8, max: 64 })
+        .isLength({ min: 8, max: 32 })
         .custom((value, { req }) => {
           if (value !== req.body.confirmPassword) {
             throw new Error('Passwords do not match');
@@ -41,6 +41,10 @@ class CustomersValidator {
             return value;
           }
         })
+        .exists(),
+      body('securityAnswer')
+        .isString()
+        .isLength({ min: 1, max: 32 })
         .exists(),
     ];
   }
@@ -51,14 +55,14 @@ class CustomersValidator {
         .isString()
         .isAlphanumeric()
         .isLength({ min: 3, max: 16 })
-        .optional(),
+        .exists(),
       body('firstName')
         .isString()
-        .isLength({ min: 1, max: 128 })
+        .isLength({ max: 128 })
         .optional(),
       body('lastName')
         .isString()
-        .isLength({ min: 1, max: 128 })
+        .isLength({ max: 128 })
         .optional(),
       body('email')
         .isString()
@@ -71,19 +75,23 @@ class CustomersValidator {
             return value;
           }
         })
-        .optional(),
+        .exists(),
       body('zip')
         .isString()
-        .isLength({ min: 1, max: 32 })
+        .isLength({ max: 32 })
         .optional(),
       body('city')
         .isString()
-        .isLength({ min: 1, max: 128 })
+        .isLength({ max: 128 })
         .optional(),
       body('address')
         .isString()
-        .isLength({ min: 1, max: 128 })
+        .isLength({ max: 128 })
         .optional(),
+      body('securityAnswer')
+        .isString()
+        .isLength({ min: 1, max: 32 })
+        .exists(),
     ];
   }
 
@@ -91,7 +99,7 @@ class CustomersValidator {
     return [
       body('password')
         .isString()
-        .isLength({ min: 8, max: 64 })
+        .isLength({ min: 8, max: 32 })
         .custom((value, { req }) => {
           if (value !== req.body.confirmPassword) {
             throw new Error('Passwords do not match');

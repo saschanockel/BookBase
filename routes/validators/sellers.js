@@ -33,7 +33,7 @@ class SellersValidator {
         .exists(),
       body('password')
         .isString()
-        .isLength({ min: 8, max: 64 })
+        .isLength({ min: 8, max: 32 })
         .custom((value, { req }) => {
           if (value !== req.body.confirmPassword) {
             throw new Error('Passwords do not match');
@@ -41,6 +41,10 @@ class SellersValidator {
             return value;
           }
         })
+        .exists(),
+      body('securityAnswer')
+        .isString()
+        .isLength({ min: 1, max: 32 })
         .exists(),
     ];
   }
@@ -51,7 +55,7 @@ class SellersValidator {
         .isString()
         .isAlphanumeric()
         .isLength({ min: 3, max: 16 })
-        .optional(),
+        .exists(),
       body('email')
         .isString()
         .isEmail()
@@ -63,7 +67,11 @@ class SellersValidator {
             return value;
           }
         })
-        .optional(),
+        .exists(),
+      body('securityAnswer')
+        .isString()
+        .isLength({ min: 1, max: 32 })
+        .exists(),
     ];
   }
 
@@ -71,7 +79,7 @@ class SellersValidator {
     return [
       body('password')
         .isString()
-        .isLength({ min: 8, max: 64 })
+        .isLength({ min: 8, max: 32 })
         .custom((value, { req }) => {
           if (value !== req.body.confirmPassword) {
             throw new Error('Passwords do not match');

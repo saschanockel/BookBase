@@ -18,9 +18,8 @@ module.exports = new EntitySchema({
     password: {
       type: 'varchar',
     },
-    securityAnswer: {
+    securityanswer: {
       type: 'varchar',
-      nullable: true,
     },
   },
   relations: {
