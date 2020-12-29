@@ -17,10 +17,12 @@ class SellersValidator {
       body('username')
         .isString()
         .isAlphanumeric()
+        .isLength({ min: 3, max: 16 })
         .exists(),
       body('email')
+        .isString()
         .isEmail()
-        .isLength({ max: 64 })
+        .isLength({ min: 5, max: 64 })
         .custom((value, { req }) => {
           if (value !== req.body.confirmEmail) {
             throw new Error('Emails do not match');
@@ -43,18 +45,17 @@ class SellersValidator {
     ];
   }
 
-  static update() {
+  static updateMyAccount() {
     return [
-      body('id')
-        .isInt()
-        .exists(),
       body('username')
+        .isString()
         .isAlphanumeric()
         .isLength({ min: 3, max: 16 })
         .optional(),
       body('email')
+        .isString()
         .isEmail()
-        .isLength({ max: 64 })
+        .isLength({ min: 5, max: 64 })
         .custom((value, { req }) => {
           if (value !== req.body.confirmEmail) {
             throw new Error('Emails do not match');
@@ -63,6 +64,11 @@ class SellersValidator {
           }
         })
         .optional(),
+    ];
+  }
+
+  static changeMyPassword() {
+    return [
       body('password')
         .isString()
         .isLength({ min: 8, max: 64 })
@@ -73,7 +79,7 @@ class SellersValidator {
             return value;
           }
         })
-        .optional(),
+        .exists(),
     ];
   }
 }

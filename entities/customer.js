@@ -38,6 +38,10 @@ module.exports = new EntitySchema({
       type: 'varchar',
       nullable: true,
     },
+    securityAnswer: {
+      type: 'varchar',
+      nullable: true,
+    },
   },
   relations: {
     orders: {
