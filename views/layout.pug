@@ -38,12 +38,21 @@ html
             div(class='btn-group')
               button(class='btn btn-secondary btn-md ml-2 dropdown-toggle' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false') Account
               div(class='dropdown-menu bg-light')
-                block register
-                  a(class='dropdown-item' href='/register') Register
-                block login
-                  a(class='dropdown-item' href='/login') Login
-                block logout
-                  form(role='form' method='post' action='/logout')
-                    input(class='dropdown-item' type='submit' value='Logout')
+                if !user
+                  block register
+                    a(class='dropdown-item' href='/register') Register
+                if !user
+                  block login
+                    a(class='dropdown-item' href='/login') Login
+                block manage
+                  if user
+                    if user.isSeller
+                      a(class='dropdown-item' href='/sellers/manage-my-account') Manage
+                    else
+                      a(class='dropdown-item' href='/customers/manage-my-account') Manage
+                if user
+                  block logout
+                    form(role='form' method='post' action='/logout')
+                      input(class='dropdown-item' type='submit' value='Logout')
     div(class='container')
       block content
