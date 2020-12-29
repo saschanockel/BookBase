@@ -102,6 +102,64 @@ router.post('/login', validator.login(), (req, res) => {
   }
 });
 
+router.post('/forgot-password', validator.forgotPassword(), (req, res) => {
+  const errors = validationResult(req);
+  // if inputs are not valid return array of errors
+  if (!errors.isEmpty()) {
+    logger.error(`Invalid POST request to /sellers${req.path} from ${req.ip} produced the following errors ${JSON.stringify(errors.array())}`);
+    res.status(422);
+    res.render('error', {
+      status: 422,
+      message: 'Invalid form input',
+      stack: JSON.stringify(errors.array()),
+      title: 'Invalid form input',
+    });
+  } else {
+    getConnection()
+      .createQueryBuilder()
+      .select(['seller.username', 'seller.email'])
+      .from(Seller, 'seller')
+      .where('seller.username = :username AND seller.securityanswer = :securityanswer', { username: req.body.username, securityanswer: req.body.securityAnswer })
+      .getOneOrFail()
+      .then((selectResult) => {
+        getConnection()
+          .createQueryBuilder()
+          .update('Seller')
+          .set({
+            password: md5(req.body.password),
+          })
+          .where('username = :username', { username: selectResult.username })
+          .execute()
+          .then(() => {
+            res.clearCookie('jwtAccessToken');
+            res.cookie('jwtAccessToken', jwt.sign({ username: selectResult.username, email: selectResult.email, isSeller: true }, process.env.JWT_SECRET));
+            res.status(200);
+            res.redirect('/');
+          })
+          .catch((error) => {
+            logger.error(`Invalid POST request to /sellers${req.path} from ${req.ip} ${error.stack}`);
+            res.status(304);
+            res.render('error', {
+              status: 304,
+              message: 'Not Modified',
+              stack: error.stack,
+              title: 'Not Modified',
+            });
+          });
+      })
+      .catch((error) => {
+        logger.error(`Invalid POST request to /sellers${req.path} from ${req.ip} ${error.stack}`);
+        res.status(401);
+        res.render('error', {
+          status: 401,
+          message: 'Unauthorized',
+          stack: error.stack,
+          title: 'Unauthorized',
+        });
+      });
+  }
+});
+
 router.put('/update-my-account', validator.updateMyAccount(), (req, res) => {
   const errors = validationResult(req);
   // if inputs are not valid return array of errors
