@@ -15,6 +15,8 @@ class SellersValidator {
   static register() {
     return [
       body('username')
+        .isString()
+        .isAlphanumeric()
         .exists(),
       body('email')
         .isEmail()

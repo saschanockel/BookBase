@@ -29,11 +29,13 @@ module.exports = new EntitySchema({
       target: 'BookOrder',
       type: 'one-to-many',
       cascade: true,
+      onDelete: 'CASCADE',
     },
     seller: {
       target: 'Seller',
       type: 'many-to-one',
       cascade: true,
+      onDelete: 'RESTRICT',
     },
   },
 });

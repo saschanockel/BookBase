@@ -24,6 +24,7 @@ module.exports = new EntitySchema({
       target: 'Book',
       type: 'one-to-many',
       cascade: true,
+      onDelete: 'RESTRICT',
     },
   },
 });

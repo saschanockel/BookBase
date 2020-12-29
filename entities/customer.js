@@ -44,6 +44,7 @@ module.exports = new EntitySchema({
       target: 'Order',
       type: 'one-to-many',
       cascade: true,
+      onDelete: 'CASCADE',
     },
   },
 });

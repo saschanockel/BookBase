@@ -18,11 +18,13 @@ module.exports = new EntitySchema({
       target: 'Book',
       type: 'many-to-one',
       cascade: true,
+      onDelete: 'CASCADE',
     },
     order: {
       target: 'Order',
       type: 'many-to-one',
       cascade: true,
+      onDelete: 'CASCADE',
     },
   },
 });

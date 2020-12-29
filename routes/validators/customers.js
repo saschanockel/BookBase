@@ -15,10 +15,14 @@ class CustomersValidator {
   static register() {
     return [
       body('username')
+        .isString()
+        .isAlphanumeric()
+        .isLength({ min: 3, max: 16 })
         .exists(),
       body('email')
+        .isString()
         .isEmail()
-        .isLength({ max: 64 })
+        .isLength({ min: 5, max: 64 })
         .custom((value, { req }) => {
           if (value !== req.body.confirmEmail) {
             throw new Error('Emails do not match');
@@ -41,12 +45,10 @@ class CustomersValidator {
     ];
   }
 
-  static update() {
+  static updateMyAccount() {
     return [
-      body('id')
-        .isInt()
-        .exists(),
       body('username')
+        .isString()
         .isAlphanumeric()
         .isLength({ min: 3, max: 16 })
         .optional(),
@@ -59,22 +61,12 @@ class CustomersValidator {
         .isLength({ min: 1, max: 128 })
         .optional(),
       body('email')
+        .isString()
         .isEmail()
-        .isLength({ max: 64 })
+        .isLength({ min: 5, max: 64 })
         .custom((value, { req }) => {
           if (value !== req.body.confirmEmail) {
             throw new Error('Emails do not match');
-          } else {
-            return value;
-          }
-        })
-        .optional(),
-      body('password')
-        .isString()
-        .isLength({ min: 8, max: 64 })
-        .custom((value, { req }) => {
-          if (value !== req.body.confirmPassword) {
-            throw new Error('Passwords do not match');
           } else {
             return value;
           }
@@ -92,6 +84,22 @@ class CustomersValidator {
         .isString()
         .isLength({ min: 1, max: 128 })
         .optional(),
+    ];
+  }
+
+  static changeMyPassword() {
+    return [
+      body('password')
+        .isString()
+        .isLength({ min: 8, max: 64 })
+        .custom((value, { req }) => {
+          if (value !== req.body.confirmPassword) {
+            throw new Error('Passwords do not match');
+          } else {
+            return value;
+          }
+        })
+        .exists(),
     ];
   }
 }

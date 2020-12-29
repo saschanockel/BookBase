@@ -120,7 +120,7 @@ router.get('/manage', (req, res) => {
           });
         })
         .catch((error) => {
-          logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
+          logger.error(`Invalid GET request to /books${req.path} from ${req.ip} ${error.stack}`);
           res.status(401);
           res.render('error', {
             status: 401,
@@ -131,7 +131,7 @@ router.get('/manage', (req, res) => {
         });
     })
     .catch((error) => {
-      logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
+      logger.error(`Invalid GET request to /books${req.path} from ${req.ip} ${error.stack}`);
       res.status(401);
       res.render('error', {
         status: 401,
@@ -222,7 +222,7 @@ router.put('/update', upload.single('cover'), validator.update(), (req, res) => 
   const errors = validationResult(req);
   // if inputs are not valid return array of errors
   if (!errors.isEmpty()) {
-    logger.error(`Invalid POST request to /books${req.path} from ${req.ip} produced the following errors ${JSON.stringify(errors.array())}`);
+    logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} produced the following errors ${JSON.stringify(errors.array())}`);
     res.status(422);
     res.render('error', {
       status: 422,
@@ -346,7 +346,7 @@ router.delete('/delete', validator.delete(), (req, res) => {
           });
       })
       .catch((error) => {
-        logger.error(`Invalid PUT request to /books${req.path} from ${req.ip} ${error.stack}`);
+        logger.error(`Invalid DELETE request to /books${req.path} from ${req.ip} ${error.stack}`);
         res.status(401);
         res.render('error', {
           status: 401,
