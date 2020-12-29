@@ -20,6 +20,51 @@ const upload = multer({ dest: os.tmpdir() });
 
 const router = express.Router();
 
+router.get('/search', validator.search(), (req, res) => {
+  const errors = validationResult(req);
+  // if inputs are not valid return array of errors
+  if (!errors.isEmpty()) {
+    logger.error(`Invalid GET request to /books${req.path} from ${req.ip} produced the following errors ${JSON.stringify(errors.array())}`);
+    res.status(422);
+    res.render('error', {
+      status: 422,
+      message: 'Invalid query parameter',
+      stack: JSON.stringify(errors.array()),
+      title: 'Invalid query parameter',
+    });
+  }
+
+  getConnection()
+    .createQueryBuilder()
+    .select('book')
+    .from(Book, 'book')
+    .leftJoinAndSelect('book.seller', 'Book')
+    .where('book.title LIKE :title', { title: `%${req.query.query}%` })
+    .addOrderBy('book.id', 'DESC')
+    .getMany()
+    .then((bookResult) => {
+      if (bookResult.length !== 0) {
+        res.render('index', {
+          title: 'BookBase | Search', user: res.locals.user, books: bookResult,
+        });
+      } else {
+        res.render('index', {
+          title: 'BookBase | Search', user: res.locals.user, message: `No books found for search term "${req.query.query}"`,
+        });
+      }
+    })
+    .catch((error) => {
+      logger.error(`Error while getting shop listing ${error.stack}`);
+      res.status(500);
+      res.render('error', {
+        status: 500,
+        message: 'Internal Server Error',
+        stack: error.stack,
+        title: 'Internal Server Error',
+      });
+    });
+});
+
 router.get('/cover', validator.cover(), (req, res) => {
   const errors = validationResult(req);
   // if inputs are not valid return array of errors

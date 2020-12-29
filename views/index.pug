@@ -1,37 +1,40 @@
 extends layout
 
 block content
-  each book, index in books
-    if !(index % 2)
-      .row
-        .col-md-6
-          figure.card.card-product.p-3
-            .img-wrap
-              img(src=`/uploads/cover/${book.id}` class='img-fluid rounded')
-            figcaption.info-wrap.mt-2
-              .row
-                h4.title.col-auto #{book.title}
-                a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${book.id}`) Download Cover
-              p.desc
-                != book.description
-              p.desc Sold by #{book.seller.username}
-            .bottom-wrap
-              a.btn.btn-sm.btn-primary.float-right(href='') Add to Cart
-              .price-wrap.h5
-                span.price-new #{book.price}€
-        if (index + 1 < books.length)
+  if books
+    each book, index in books
+      if !(index % 2)
+        .row
           .col-md-6
             figure.card.card-product.p-3
               .img-wrap
-                img(src=`/uploads/cover/${books[index + 1].id}` class='img-fluid rounded')
+                img(src=`/uploads/cover/${book.id}` class='img-fluid rounded')
               figcaption.info-wrap.mt-2
                 .row
-                  h4.title.col-auto #{books[index + 1].title}
-                  a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${books[index + 1].id}`) Download Cover
+                  h4.title.col-auto #{book.title}
+                  a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${book.id}`) Download Cover
                 p.desc
-                  != books[index + 1].description
-                p.desc Sold by #{books[index + 1].seller.username}
+                  != book.description
+                p.desc Sold by #{book.seller.username}
               .bottom-wrap
                 a.btn.btn-sm.btn-primary.float-right(href='') Add to Cart
                 .price-wrap.h5
-                  span.price-new #{books[index + 1].price}€
+                  span.price-new #{book.price}€
+          if (index + 1 < books.length)
+            .col-md-6
+              figure.card.card-product.p-3
+                .img-wrap
+                  img(src=`/uploads/cover/${books[index + 1].id}` class='img-fluid rounded')
+                figcaption.info-wrap.mt-2
+                  .row
+                    h4.title.col-auto #{books[index + 1].title}
+                    a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${books[index + 1].id}`) Download Cover
+                  p.desc
+                    != books[index + 1].description
+                  p.desc Sold by #{books[index + 1].seller.username}
+                .bottom-wrap
+                  a.btn.btn-sm.btn-primary.float-right(href='') Add to Cart
+                  .price-wrap.h5
+                    span.price-new #{books[index + 1].price}€
+  else
+    h4 #{message}
