@@ -69,14 +69,6 @@ class BooksValidator {
         .exists(),
     ];
   }
-
-  static search() {
-    return [
-      query('query')
-        .isLength({ min: 1 })
-        .exists(),
-    ];
-  }
 }
 
 module.exports = BooksValidator;

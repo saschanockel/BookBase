@@ -20,18 +20,9 @@ const upload = multer({ dest: os.tmpdir() });
 
 const router = express.Router();
 
-router.get('/search', validator.search(), (req, res) => {
-  const errors = validationResult(req);
-  // if inputs are not valid return array of errors
-  if (!errors.isEmpty()) {
-    logger.error(`Invalid GET request to /books${req.path} from ${req.ip} produced the following errors ${JSON.stringify(errors.array())}`);
-    res.status(422);
-    res.render('error', {
-      status: 422,
-      message: 'Invalid query parameter',
-      stack: JSON.stringify(errors.array()),
-      title: 'Invalid query parameter',
-    });
+router.get('/search', (req, res) => {
+  if (!req.query.query) {
+    res.redirect('/');
   } else {
     getConnection()
       .createQueryBuilder()
