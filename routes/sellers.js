@@ -84,6 +84,7 @@ router.post('/login', validator.login(), (req, res) => {
       .where('seller.username = :username AND seller.password = :password', { username: req.body.username, password: md5(req.body.password) })
       .getOneOrFail()
       .then((selectResult) => {
+        res.clearCookie('cart');
         res.clearCookie('jwtAccessToken');
         res.cookie('jwtAccessToken', jwt.sign({ username: selectResult.username, email: selectResult.email, isSeller: true }, process.env.JWT_SECRET));
         res.status(200);

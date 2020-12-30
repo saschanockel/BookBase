@@ -6,7 +6,9 @@ html
       title= title
       link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css' integrity='sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==' crossorigin='anonymous')
       script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js' integrity='sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==' crossorigin='anonymous')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js' integrity='sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==' crossorigin='anonymous')
       script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js' integrity='sha512-iceXjjbmB2rwoX93Ka6HAHP+B76IY1z0o3h+N1PeDtRSsyeetU3/0QKJqGyPJcX63zysNehggFwMC/bi7dvMig==' crossorigin='anonymous')
+      script(src='/script.js')
   body(class='bg-light')
     block navbar
       nav(class='navbar navbar-expand-lg navbar-dark bg-dark mb-3')
@@ -24,6 +26,9 @@ html
                 if user
                   if user.isSeller
                     a(class='nav-link' href='/books/manage') Manage my books
+                if user
+                  if !user.isSeller
+                    a(class='nav-link' href='/customers/checkout') Cart
           block userInfo
             if user
               if user.isSeller

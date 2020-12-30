@@ -1,0 +1,44 @@
+extends ../layout
+
+block content
+  if books
+    - var total = 0.0
+    .row.mb-3
+      .col-8
+        h3
+          span
+          |  Shopping Cart
+      .col-4
+        a.btn.btn-primary.btn-sm.btn-block(type='button' href='/') Continue shopping
+    each book in books
+      - total = total + parseFloat(book.price)
+      .row(id=`cartItem${book.id}`)
+        .col-2
+          img.img-responsive(src=`/uploads/cover/${book.id}` width='100%')
+        .col-8
+          h4
+            strong #{book.title}
+          h4
+            small #{book.description}
+          h5
+            small Sold by #{book.seller.username}
+        .col-2
+          .row
+            .col-6
+              h5
+                  | #{book.price}€
+            .col-6
+              button.btn.btn-danger.btn-sm(type='button' onclick=`removeFromCart(${book.id})`) remove
+      hr(id=`cartItemSeparator${book.id}`)
+    .row
+      .col-2
+        h6 Added items?
+      .col-2
+        a.btn.btn-outline-info(type='button' href='/customers/checkout') Update cart
+      .col-4
+        h4.text-right Total
+          strong  #{total}€
+      .col-4
+        button.btn.btn-success.btn-block(type='button') Place Order
+  else
+    h4 #{message}

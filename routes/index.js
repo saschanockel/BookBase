@@ -49,6 +49,7 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
+  res.clearCookie('cart');
   res.clearCookie('jwtAccessToken');
   res.status(204);
   res.redirect('/');
