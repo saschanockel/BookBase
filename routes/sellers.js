@@ -295,6 +295,16 @@ router.delete('/delete-my-account', (req, res) => {
           res.clearCookie('jwtAccessToken');
           res.status(200);
           res.redirect('/');
+        })
+        .catch((error) => {
+          logger.error(`Invalid DELETE request to /sellers${req.path} from ${req.ip} ${error.stack}`);
+          res.status(409);
+          res.render('error', {
+            status: 409,
+            message: 'Conflict, make sure you deleted all books before deleting your account',
+            stack: error.stack,
+            title: 'Conflict',
+          });
         });
     })
     .catch((error) => {
