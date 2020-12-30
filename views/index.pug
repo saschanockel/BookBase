@@ -11,7 +11,7 @@ block content
                 img(src=`/uploads/cover/${book.id}` class='img-fluid rounded')
               figcaption.info-wrap.mt-2
                 .row
-                  h4.title.col-auto #{book.title}
+                  h4.title.col-auto #{book.title} | by #{book.author}
                   a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${book.id}`) Download Cover
                 p.desc
                   != book.description
@@ -29,7 +29,7 @@ block content
                   img(src=`/uploads/cover/${books[index + 1].id}` class='img-fluid rounded')
                 figcaption.info-wrap.mt-2
                   .row
-                    h4.title.col-auto #{books[index + 1].title}
+                    h4.title.col-auto #{books[index + 1].title} | by #{books[index + 1].author}
                     a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${books[index + 1].id}`) Download Cover
                   p.desc
                     != books[index + 1].description
