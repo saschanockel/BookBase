@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+  if orders
+    each order in orders
+      - var total = 0.0
+      .row.mb-3.mt-3
+        h3
+          span
+          |  Order ##{order.id}
+      each book in order.books
+        - total = total + parseFloat(book.price)
+        .row
+          .col-2
+            img.img-responsive(src=`/uploads/cover/${book.id}` width='100%')
+          .col-8
+            h4
+              strong #{book.title} | by #{book.author}
+            h5
+              small Sold by #{book.seller.username}
+          .col-2
+            h5
+              | #{book.price}€
+        hr
+      h4.text-right Total
+        strong  #{total}€
+  else
+    h4 #{message}

@@ -91,6 +91,89 @@ router.get('/manage-my-account', (req, res) => {
     });
 });
 
+router.get('/my-orders', (req, res) => {
+  getConnection()
+    .createQueryBuilder()
+    .select('customer')
+    .from(Customer, 'customer')
+    .where('customer.username = :username', { username: res.locals.user.username })
+    .getOneOrFail()
+    .then((customerResult) => {
+      getConnection()
+        .createQueryBuilder()
+        .select('order')
+        .from(Order, 'order')
+        .where('order.customer = :customer', { customer: customerResult.id })
+        .addOrderBy('order.id', 'ASC')
+        .getMany()
+        .then((orderResult) => {
+          const orders = [];
+          const orderPromises = [];
+          orderResult.forEach((order) => {
+            orderPromises.push(
+              getConnection()
+                .createQueryBuilder()
+                .relation(Order, 'book')
+                .of(order.id)
+                .loadMany()
+                .then(async (bookResult) => {
+                  const sellerPromises = [];
+                  bookResult.forEach((book) => {
+                    sellerPromises.push(
+                      getConnection()
+                        .createQueryBuilder()
+                        .relation(Book, 'seller')
+                        .of(book.id)
+                        .loadOne()
+                        .then((sellerResult) => {
+                        // eslint-disable-next-line no-param-reassign
+                          book.seller = sellerResult;
+                        }),
+                    );
+                  });
+
+                  await Promise.all(sellerPromises).then(() => {
+                    orders.push({ id: order.id, books: bookResult });
+                  });
+                }),
+            );
+          });
+
+          Promise.all(orderPromises).then(() => {
+            if (orders.length !== 0) {
+              res.render('./customers/my-orders', {
+                title: 'BookBase | My Orders', user: res.locals.user, orders,
+              });
+            } else {
+              res.render('./customers/my-orders', {
+                title: 'BookBase | My Orders', user: res.locals.user, message: 'You have no orders yet :(',
+              });
+            }
+          });
+        })
+        .catch((error) => {
+          logger.error(`Invalid GET request to /customers${req.path} from ${req.ip} ${error.stack}`);
+          res.status(500);
+          res.render('error', {
+            status: 500,
+            message: 'Internal Server Error',
+            stack: error.stack,
+            title: 'Internal Server Error',
+          });
+        });
+    })
+    .catch((error) => {
+      logger.error(`Invalid GET request to /customers${req.path} from ${req.ip} ${error.stack}`);
+      res.status(401);
+      res.render('error', {
+        status: 401,
+        message: 'Unauthorized',
+        stack: error.stack,
+        title: 'Unauthorized',
+      });
+    });
+});
+
 router.post('/register', validator.register(), (req, res) => {
   const errors = validationResult(req);
   // if inputs are not valid return array of errors
@@ -262,7 +345,7 @@ router.post('/checkout', (req, res) => {
         });
     })
     .catch((error) => {
-      logger.error(`Invalid PUT request to /customers${req.path} from ${req.ip} ${error.stack}`);
+      logger.error(`Invalid POST request to /customers${req.path} from ${req.ip} ${error.stack}`);
       res.status(401);
       res.render('error', {
         status: 401,

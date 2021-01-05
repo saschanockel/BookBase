@@ -26,9 +26,11 @@ html
                 if user
                   if user.isSeller
                     a(class='nav-link' href='/books/manage') Manage my books
+                    a(class='nav-link' href='/sellers/my-orders') My Orders
                 if user
                   if !user.isSeller
                     a(class='nav-link' href='/customers/checkout') Cart
+                    a(class='nav-link' href='/customers/my-orders') My Orders
           block userInfo
             if user
               if user.isSeller
