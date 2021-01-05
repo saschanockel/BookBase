@@ -48,6 +48,18 @@ router.get('/login', (req, res) => {
   });
 });
 
+router.get('/imprint', (req, res) => {
+  res.render('imprint', {
+    title: 'BookBase | Imprint', user: res.locals.user,
+  });
+});
+
+router.get('/privacy-policy', (req, res) => {
+  res.render('privacy-policy', {
+    title: 'BookBase | Privacy policy', user: res.locals.user,
+  });
+});
+
 router.post('/logout', (req, res) => {
   res.clearCookie('cart');
   res.clearCookie('jwtAccessToken');

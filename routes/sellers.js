@@ -6,6 +6,8 @@ const md5 = require('md5');
 const validator = require('./validators/sellers');
 const { logger } = require('../utils/winston');
 const Seller = require('../entities/seller');
+const Book = require('../entities/book');
+const Order = require('../entities/order');
 
 const router = express.Router();
 
@@ -20,6 +22,90 @@ router.get('/manage-my-account', (req, res) => {
       res.render('./sellers/manage-my-account', {
         title: 'BookBase | Manage my account', user: res.locals.user, account: sellerResult,
       });
+    })
+    .catch((error) => {
+      logger.error(`Invalid GET request to /sellers${req.path} from ${req.ip} ${error.stack}`);
+      res.status(401);
+      res.render('error', {
+        status: 401,
+        message: 'Unauthorized',
+        stack: error.stack,
+        title: 'Unauthorized',
+      });
+    });
+});
+
+router.get('/my-orders', (req, res) => {
+  getConnection()
+    .createQueryBuilder()
+    .select('seller')
+    .from(Seller, 'seller')
+    .where('seller.username = :username', { username: res.locals.user.username })
+    .getOneOrFail()
+    .then((sellerResult) => {
+      getConnection()
+        .createQueryBuilder()
+        .select('book')
+        .from(Book, 'book')
+        .where('book.seller = :seller', { seller: sellerResult.id })
+        .addOrderBy('book.id', 'ASC')
+        .getMany()
+        .then((bookResult) => {
+          const books = [];
+          const bookPromises = [];
+          bookResult.forEach((book) => {
+            bookPromises.push(
+              getConnection()
+                .createQueryBuilder()
+                .relation(Book, 'order')
+                .of(book.id)
+                .loadMany()
+                .then(async (orderResult) => {
+                  const customerPromises = [];
+                  orderResult.forEach((order) => {
+                    customerPromises.push(
+                      getConnection()
+                        .createQueryBuilder()
+                        .relation(Order, 'customer')
+                        .of(order.id)
+                        .loadOne()
+                        .then((customerResult) => {
+                          // eslint-disable-next-line no-param-reassign
+                          order.customer = customerResult;
+                        }),
+                    );
+                  });
+
+                  await Promise.all(customerPromises).then(() => {
+                    books.push({ book, orders: orderResult });
+                  });
+                }),
+            );
+          });
+
+          Promise.all(bookPromises).then(() => {
+            if (books.length !== 0) {
+              console.log(books[0]);
+              res.render('./sellers/my-orders', {
+                title: 'BookBase | My Orders', user: res.locals.user, books,
+              });
+            } else {
+              res.render('./sellers/my-orders', {
+                title: 'BookBase | My Orders', user: res.locals.user, message: 'No one ordered your books yet :(',
+              });
+            }
+          });
+        })
+        .catch((error) => {
+          logger.error(`Invalid GET request to /sellers${req.path} from ${req.ip} ${error.stack}`);
+          res.status(500);
+          res.render('error', {
+            status: 500,
+            message: 'Internal Server Error',
+            stack: error.stack,
+            title: 'Internal Server Error',
+          });
+        });
     })
     .catch((error) => {
       logger.error(`Invalid GET request to /sellers${req.path} from ${req.ip} ${error.stack}`);

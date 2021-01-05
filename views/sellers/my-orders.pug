@@ -1,0 +1,41 @@
+extends ../layout
+
+block content
+  if books
+    each element in books
+      - var total = 0.0
+      .row.mb-3.mt-3
+        .col-2
+          img.img-responsive(src=`/uploads/cover/${element.book.id}` width='100%')
+        .col-10
+          h3
+            span
+            |  Orders for book ##{element.book.id}
+          h3
+            span
+            |  #{element.book.title} | by #{element.book.author}
+          h3
+            span
+            |  ISBN: #{element.book.isbn}
+      each order in element.orders
+        - total = total + parseFloat(element.book.price)
+        .row
+          .col-10
+            h4
+              strong Order ##{order.id} | Credit card number #{order.customer.creditCardNr}
+            h5
+              small Purchased by #{order.customer.username} (#{order.customer.email})
+            if (order.customer.firstName && order.customer.lastName && order.customer.address && order.customer.zip && order.customer.city)
+              h5
+                small Ship to: #{order.customer.firstName} #{order.customer.lastName}, #{order.customer.address}, #{order.customer.zip} #{order.customer.city}
+            else
+              h5
+                small Customer has not provided full address
+          .col-2
+            h5
+              | #{element.book.price}€
+        hr
+      h4.text-right Total
+        strong  #{total}€
+  else
+    h4 #{message}

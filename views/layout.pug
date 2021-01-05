@@ -1,7 +1,7 @@
 doctype html
 
 html
-  head
+  header
     block head
       title= title
       link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css' integrity='sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==' crossorigin='anonymous')
@@ -29,7 +29,7 @@ html
                     a(class='nav-link' href='/sellers/my-orders') My Orders
                 if user
                   if !user.isSeller
-                    a(class='nav-link' href='/customers/checkout') Cart
+                    a(class='nav-link' href='/customers/checkout') Checkout
                     a(class='nav-link' href='/customers/my-orders') My Orders
           block userInfo
             if user
@@ -63,3 +63,33 @@ html
                       input(class='dropdown-item' type='submit' value='Logout')
     div(class='container')
       block content
+  footer#footer.bg-dark
+    .container.p-3
+      .row
+        .col-2
+          a(class='text-secondary' href='/imprint') Imprint
+        .col-2
+          a(class='text-secondary' href='/privacy-policy') Privacy policy
+    script.
+      $(document).ready(function () {
+        let docHeight = $(window).height();
+        let footerHeight = $('#footer').height();
+        let footerTop = $('#footer').position().top + footerHeight;
+        let marginTop = (docHeight - footerTop + 10);
+        if (footerTop < docHeight)
+          $('#footer').css('margin-top', marginTop + 'px');
+        else
+          $('#footer').css('margin-top', '0px');
+
+        setInterval(function () {
+          let docHeight = $(window).height();
+          let footerHeight = $('#footer').height();
+          let footerTop = $('#footer').position().top + footerHeight;
+          let marginTop = (docHeight - footerTop + 10);
+          if (footerTop < docHeight)
+            $('#footer').css('margin-top', marginTop + 'px');
+          else
+            $('#footer').css('margin-top', '0px');
+        }, 250);
+      });
+
