@@ -38,6 +38,10 @@ module.exports = new EntitySchema({
       type: 'varchar',
       nullable: true,
     },
+    creditCardNr: {
+      type: 'varchar',
+      nullable: true,
+    },
     securityanswer: {
       type: 'varchar',
     },

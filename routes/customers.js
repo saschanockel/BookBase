@@ -7,6 +7,7 @@ const validator = require('./validators/customers');
 const { logger } = require('../utils/winston');
 const Customer = require('../entities/customer');
 const Book = require('../entities/book');
+const Order = require('../entities/order');
 
 const router = express.Router();
 
@@ -217,6 +218,61 @@ router.post('/forgot-password', validator.forgotPassword(), (req, res) => {
   }
 });
 
+router.post('/checkout', (req, res) => {
+  getConnection()
+    .createQueryBuilder()
+    .select(['customer.id'])
+    .from(Customer, 'customer')
+    .where('customer.username = :username', { username: res.locals.user.username })
+    .getOneOrFail()
+    .then((customerResult) => {
+      getConnection()
+        .createQueryBuilder()
+        .insert()
+        .into('Order')
+        .values([
+          {
+            customer: customerResult.id,
+          },
+        ])
+        .returning('id')
+        .execute()
+        .then((insertOrderResult) => {
+          getConnection()
+            .createQueryBuilder()
+            .relation(Order, 'book')
+            .of(insertOrderResult.generatedMaps[0].id)
+            .add(JSON.parse(req.cookies.cart).books)
+            .then(() => {
+              res.clearCookie('cart');
+              res.render('./customers/checkout', {
+                title: 'BookBase | Checkout', user: res.locals.user, message: 'Your order has been processed :)',
+              });
+            });
+        })
+        .catch((error) => {
+          logger.error(`Invalid POST request to /customers${req.path} from ${req.ip} ${error.stack}`);
+          res.status(500);
+          res.render('error', {
+            status: 500,
+            message: 'Internal Server Error',
+            stack: error.stack,
+            title: 'Internal Server Error',
+          });
+        });
+    })
+    .catch((error) => {
+      logger.error(`Invalid PUT request to /customers${req.path} from ${req.ip} ${error.stack}`);
+      res.status(401);
+      res.render('error', {
+        status: 401,
+        message: 'Unauthorized',
+        stack: error.stack,
+        title: 'Unauthorized',
+      });
+    });
+});
+
 router.put('/update-my-account', validator.updateMyAccount(), (req, res) => {
   const errors = validationResult(req);
   // if inputs are not valid return array of errors
@@ -248,6 +304,7 @@ router.put('/update-my-account', validator.updateMyAccount(), (req, res) => {
             zip: req.body.zip,
             city: req.body.city,
             address: req.body.address,
+            creditCardNr: req.body.creditCardNr,
             securityanswer: req.body.securityAnswer,
           })
           .where('username = :username', { username: res.locals.user.username })

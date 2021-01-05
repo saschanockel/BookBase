@@ -88,6 +88,10 @@ class CustomersValidator {
         .isString()
         .isLength({ max: 128 })
         .optional(),
+      body('creditCardNr')
+        .isString()
+        .isCreditCard()
+        .optional(),
       body('securityAnswer')
         .isString()
         .isLength({ min: 1, max: 32 })

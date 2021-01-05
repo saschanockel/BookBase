@@ -23,6 +23,8 @@ block content
           .form-group
             input.form-control.input-lg(type='text' name='address' placeholder='Address' maxlength='128' value=account.address)
           .form-group
+            input.form-control.input-lg(type='tel' name='creditCardNr' inputmode='numeric' pattern='[0-9\s]{13,19}' autocomplete='cc-number' maxlength='19' placeholder='Credit card number' value=account.creditCardNr)
+          .form-group
             p What is your favorite image editing program?
             input#signUpSecurityAnswer.form-control.input-lg(type='text' name='securityAnswer' placeholder='Security question answer' minlength='1' maxlength='32' value=account.securityanswer required)
           div(class='mt-3')

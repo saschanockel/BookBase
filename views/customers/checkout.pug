@@ -39,6 +39,8 @@ block content
         h4.text-right Total
           strong  #{total}€
       .col-4
-        button.btn.btn-success.btn-block(type='button') Place Order
+        form(role='form' method='post' action='/customers/checkout' enctype='form-data')
+          fieldset
+            input.btn.btn-success.btn-block(type='submit' value='Place Order')
   else
     h4 #{message}

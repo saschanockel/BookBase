@@ -25,11 +25,17 @@ module.exports = new EntitySchema({
     },
   },
   relations: {
-    bookOrder: {
-      target: 'BookOrder',
-      type: 'one-to-many',
+    order: {
+      target: 'Order',
+      type: 'many-to-many',
       cascade: true,
       onDelete: 'CASCADE',
+      joinTable: {
+        name: 'book_order',
+        joinColumn: {
+          name: 'bookId',
+        },
+      },
     },
     seller: {
       target: 'Seller',
