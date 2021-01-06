@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
       res.render('error', {
         status: 500,
         message: 'Internal Server Error',
-        stack: error.stack,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : false,
         title: 'Internal Server Error',
       });
     });

@@ -44,12 +44,12 @@ router.get('/search', (req, res) => {
         }
       })
       .catch((error) => {
-        logger.error(`Error while getting shop listing ${error.stack}`);
+        logger.error(`Invalid GET request to /books${req.path} from ${req.ip} ${error.stack}`);
         res.status(500);
         res.render('error', {
           status: 500,
           message: 'Internal Server Error',
-          stack: error.stack,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : false,
           title: 'Internal Server Error',
         });
       });
@@ -116,7 +116,7 @@ router.get('/manage', (req, res) => {
           res.render('error', {
             status: 401,
             message: 'Unauthorized',
-            stack: error.stack,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : false,
             title: 'Unauthorized',
           });
         });
@@ -127,7 +127,7 @@ router.get('/manage', (req, res) => {
       res.render('error', {
         status: 401,
         message: 'Unauthorized',
-        stack: error.stack,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : false,
         title: 'Unauthorized',
       });
     });
@@ -191,7 +191,7 @@ router.post('/add', upload.single('cover'), validator.add(), (req, res) => {
             res.render('error', {
               status: 500,
               message: 'Internal Server Error',
-              stack: error.stack,
+              stack: process.env.NODE_ENV === 'development' ? error.stack : false,
               title: 'Internal Server Error',
             });
           });
@@ -202,7 +202,7 @@ router.post('/add', upload.single('cover'), validator.add(), (req, res) => {
         res.render('error', {
           status: 401,
           message: 'Unauthorized',
-          stack: error.stack,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : false,
           title: 'Unauthorized',
         });
       });
@@ -253,7 +253,7 @@ router.put('/update', upload.single('cover'), validator.update(), (req, res) => 
               res.render('error', {
                 status: 304,
                 message: 'Not Modified',
-                stack: error.stack,
+                stack: process.env.NODE_ENV === 'development' ? error.stack : false,
                 title: 'Not Modified',
               });
             });
@@ -283,7 +283,7 @@ router.put('/update', upload.single('cover'), validator.update(), (req, res) => 
               res.render('error', {
                 status: 304,
                 message: 'Not Modified',
-                stack: error.stack,
+                stack: process.env.NODE_ENV === 'development' ? error.stack : false,
                 title: 'Not Modified',
               });
             });
@@ -295,7 +295,7 @@ router.put('/update', upload.single('cover'), validator.update(), (req, res) => 
         res.render('error', {
           status: 401,
           message: 'Unauthorized',
-          stack: error.stack,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : false,
           title: 'Unauthorized',
         });
       });
@@ -334,6 +334,16 @@ router.delete('/delete', validator.delete(), (req, res) => {
                 res.status(200);
                 res.redirect('/books/manage');
               });
+          })
+          .catch((error) => {
+            logger.error(`Invalid DELETE request to /books${req.path} from ${req.ip} ${error.stack}`);
+            res.status(500);
+            res.render('error', {
+              status: 500,
+              message: 'Internal Server Error',
+              stack: process.env.NODE_ENV === 'development' ? error.stack : false,
+              title: 'Internal Server Error',
+            });
           });
       })
       .catch((error) => {
@@ -342,7 +352,7 @@ router.delete('/delete', validator.delete(), (req, res) => {
         res.render('error', {
           status: 401,
           message: 'Unauthorized',
-          stack: error.stack,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : false,
           title: 'Unauthorized',
         });
       });

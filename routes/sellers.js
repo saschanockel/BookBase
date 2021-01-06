@@ -29,7 +29,7 @@ router.get('/manage-my-account', (req, res) => {
       res.render('error', {
         status: 401,
         message: 'Unauthorized',
-        stack: error.stack,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : false,
         title: 'Unauthorized',
       });
     });
@@ -72,12 +72,41 @@ router.get('/my-orders', (req, res) => {
                         .then((customerResult) => {
                           // eslint-disable-next-line no-param-reassign
                           order.customer = customerResult;
+                        })
+                        .catch((error) => {
+                          logger.error(`Invalid GET request to /sellers${req.path} from ${req.ip} ${error.stack}`);
+                          res.status(500);
+                          res.render('error', {
+                            status: 500,
+                            message: 'Internal Server Error',
+                            stack: process.env.NODE_ENV === 'development' ? error.stack : false,
+                            title: 'Internal Server Error',
+                          });
                         }),
                     );
                   });
 
                   await Promise.all(customerPromises).then(() => {
                     books.push({ book, orders: orderResult });
+                  }).catch((error) => {
+                    logger.error(`Invalid GET request to /sellers${req.path} from ${req.ip} ${error.stack}`);
+                    res.status(500);
+                    res.render('error', {
+                      status: 500,
+                      message: 'Internal Server Error',
+                      stack: process.env.NODE_ENV === 'development' ? error.stack : false,
+                      title: 'Internal Server Error',
+                    });
+                  });
+                })
+                .catch((error) => {
+                  logger.error(`Invalid GET request to /sellers${req.path} from ${req.ip} ${error.stack}`);
+                  res.status(500);
+                  res.render('error', {
+                    status: 500,
+                    message: 'Internal Server Error',
+                    stack: process.env.NODE_ENV === 'development' ? error.stack : false,
+                    title: 'Internal Server Error',
                   });
                 }),
             );
@@ -94,6 +123,15 @@ router.get('/my-orders', (req, res) => {
                 title: 'BookBase | My Orders', user: res.locals.user, message: 'No one ordered your books yet :(',
               });
             }
+          }).catch((error) => {
+            logger.error(`Invalid GET request to /sellers${req.path} from ${req.ip} ${error.stack}`);
+            res.status(500);
+            res.render('error', {
+              status: 500,
+              message: 'Internal Server Error',
+              stack: process.env.NODE_ENV === 'development' ? error.stack : false,
+              title: 'Internal Server Error',
+            });
           });
         })
         .catch((error) => {
@@ -102,7 +140,7 @@ router.get('/my-orders', (req, res) => {
           res.render('error', {
             status: 500,
             message: 'Internal Server Error',
-            stack: error.stack,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : false,
             title: 'Internal Server Error',
           });
         });
@@ -113,7 +151,7 @@ router.get('/my-orders', (req, res) => {
       res.render('error', {
         status: 401,
         message: 'Unauthorized',
-        stack: error.stack,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : false,
         title: 'Unauthorized',
       });
     });
@@ -143,7 +181,7 @@ router.post('/register', validator.register(), (req, res) => {
       res.render('error', {
         status: 409,
         message: 'Conflict',
-        stack: error.stack,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : false,
         title: 'Conflict',
       });
     });
@@ -182,7 +220,7 @@ router.post('/login', validator.login(), (req, res) => {
         res.render('error', {
           status: 401,
           message: 'Unauthorized',
-          stack: error.stack,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : false,
           title: 'Unauthorized',
         });
       });
@@ -229,7 +267,7 @@ router.post('/forgot-password', validator.forgotPassword(), (req, res) => {
             res.render('error', {
               status: 304,
               message: 'Not Modified',
-              stack: error.stack,
+              stack: process.env.NODE_ENV === 'development' ? error.stack : false,
               title: 'Not Modified',
             });
           });
@@ -240,7 +278,7 @@ router.post('/forgot-password', validator.forgotPassword(), (req, res) => {
         res.render('error', {
           status: 401,
           message: 'Unauthorized',
-          stack: error.stack,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : false,
           title: 'Unauthorized',
         });
       });
@@ -289,7 +327,7 @@ router.put('/update-my-account', validator.updateMyAccount(), (req, res) => {
             res.render('error', {
               status: 304,
               message: 'Not Modified',
-              stack: error.stack,
+              stack: process.env.NODE_ENV === 'development' ? error.stack : false,
               title: 'Not Modified',
             });
           });
@@ -300,7 +338,7 @@ router.put('/update-my-account', validator.updateMyAccount(), (req, res) => {
         res.render('error', {
           status: 401,
           message: 'Unauthorized',
-          stack: error.stack,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : false,
           title: 'Unauthorized',
         });
       });
@@ -345,7 +383,7 @@ router.put('/change-my-password', validator.changeMyPassword(), (req, res) => {
             res.render('error', {
               status: 304,
               message: 'Not Modified',
-              stack: error.stack,
+              stack: process.env.NODE_ENV === 'development' ? error.stack : false,
               title: 'Not Modified',
             });
           });
@@ -356,7 +394,7 @@ router.put('/change-my-password', validator.changeMyPassword(), (req, res) => {
         res.render('error', {
           status: 401,
           message: 'Unauthorized',
-          stack: error.stack,
+          stack: process.env.NODE_ENV === 'development' ? error.stack : false,
           title: 'Unauthorized',
         });
       });
@@ -388,7 +426,7 @@ router.delete('/delete-my-account', (req, res) => {
           res.render('error', {
             status: 409,
             message: 'Conflict, make sure you deleted all books before deleting your account',
-            stack: error.stack,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : false,
             title: 'Conflict',
           });
         });
@@ -399,7 +437,7 @@ router.delete('/delete-my-account', (req, res) => {
       res.render('error', {
         status: 401,
         message: 'Unauthorized',
-        stack: error.stack,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : false,
         title: 'Unauthorized',
       });
     });
