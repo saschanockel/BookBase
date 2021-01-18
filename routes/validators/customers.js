@@ -16,8 +16,6 @@ class CustomersValidator {
     return [
       body('username')
         .isString()
-        .isAlphanumeric()
-        .isLength({ min: 3, max: 16 })
         .exists(),
       body('email')
         .isString()
@@ -53,8 +51,6 @@ class CustomersValidator {
     return [
       body('username')
         .isString()
-        .isAlphanumeric()
-        .isLength({ min: 3, max: 16 })
         .exists(),
       body('firstName')
         .isString()
