@@ -4,7 +4,7 @@ const {
 } = require('winston');
 
 const {
-  combine, colorize, printf, timestamp,
+  combine, printf, timestamp,
 } = format;
 
 // eslint-disable-next-line no-shadow
@@ -18,7 +18,7 @@ const httpLoggerFormat = printf(({ level, message }) => `[${level}] ${message}`)
 const logger = createLogger({
   level: process.env.LOG_LEVEL,
   transports: [
-    new transports.Console({ format: combine(colorize(), timestamp(), loggerFormat) }),
+    new transports.Console({ format: combine(timestamp(), loggerFormat) }),
     new transports.File({
       filename: path.join(__dirname, '..', 'logs', 'error.log'),
       level: 'error',
@@ -40,7 +40,7 @@ addColors({ http: 'blue' });
 const httpLogger = createLogger({
   levels: { http: 0 },
   transports: [
-    new transports.Console({ level: 'http', format: combine(colorize(), httpLoggerFormat) }),
+    new transports.Console({ level: 'http', format: combine(httpLoggerFormat) }),
     new transports.File({
       filename: path.join(__dirname, '..', 'logs', 'http.log'),
       level: 'http',

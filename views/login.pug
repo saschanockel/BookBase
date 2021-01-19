@@ -1,0 +1,63 @@
+extends layout
+
+block content
+  .row
+    .col-md-6.mx-auto
+      .row-md.mb-4
+        form(role='form' method='post' action='/customers/login')
+          fieldset
+            p.text-uppercase.pull-center Customer Login
+            .form-group
+              input#signInCustomerUsername.form-control.input-lg(type='text' name='username' placeholder='Username' required)
+            .form-group
+              input#signInCustomerPassword.form-control.input-lg(type='password' name='password' placeholder='Password' required)
+            div(class='mt-3')
+              input.btn.btn-primary(type='submit' value='Login')
+        p.mt-2
+          a(data-toggle="collapse" href="#customerForogorPassword" role="button" aria-expanded="false" aria-controls="customerForogorPassword")
+            | Forgot password
+        #customerForogorPassword.collapse
+          .div
+            form(role='form' method='post' action='/customers/forgot-password')
+              fieldset
+                p.text-uppercase.pull-center Reset your password
+                .form-group
+                  input.form-control.input-lg(type='text' name='username' placeholder='Username' required)
+                .form-group
+                  p What is your favorite image editing program?
+                  input.form-control.input-lg(type='text' name='securityAnswer' placeholder='Security question answer' required)
+                .form-group
+                  input.form-control.input-lg(type='password' name='password' placeholder='New password' minlength='8' maxlength='32' required)
+                .form-group
+                  input.form-control.input-lg(type='password' name='confirmPassword' placeholder='Confirm new password' minlength='8' maxlength='32' required)
+                div(class='mt-3')
+                  input.btn.btn-primary(type='submit' value='Reset password')
+      .row-md.mb-4
+        form(role='form' method='post' action='/sellers/login')
+          fieldset
+            p.text-uppercase.pull-center Seller Login
+            .form-group
+              input#signUpCustomerUsername.form-control.input-lg(type='text' name='username' placeholder='Username' required)
+            .form-group
+              input#signUpCustomerPassword.form-control.input-lg(type='password' name='password' placeholder='Password' required)
+            div(class='mt-3')
+              input.btn.btn-primary(type='submit' value='Login')
+        p.mt-2
+          a(data-toggle="collapse" href="#sellerForogorPassword" role="button" aria-expanded="false" aria-controls="sellerForogorPassword")
+            | Forgot password
+        #sellerForogorPassword.collapse
+          .div
+            form(role='form' method='post' action='/sellers/forgot-password')
+              fieldset
+                p.text-uppercase.pull-center Reset your password
+                .form-group
+                  input.form-control.input-lg(type='text' name='username' placeholder='Username' required)
+                .form-group
+                  p What is your favorite image editing program?
+                  input.form-control.input-lg(type='text' name='securityAnswer' placeholder='Security question answer' required)
+                .form-group
+                  input.form-control.input-lg(type='password' name='password' placeholder='New password' minlength='8' maxlength='32' required)
+                .form-group
+                  input.form-control.input-lg(type='password' name='confirmPassword' placeholder='Confirm new password' minlength='8' maxlength='32' required)
+                div(class='mt-3')
+                  input.btn.btn-primary(type='submit' value='Reset password')

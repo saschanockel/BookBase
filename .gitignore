@@ -105,3 +105,7 @@ dist
 
 # IDE directories
 .idea
+
+# Resource directories
+uploads/*
+public/uploads/*

@@ -1,1 +1,4 @@
-text
+User-Agent: *
+Disallow: /uploads
+Disallow: /script.js
+Disallow: /todo.md

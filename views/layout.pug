@@ -1,15 +1,17 @@
 doctype html
 
 html
-  head
+  header
     block head
       title= title
       link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css' integrity='sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==' crossorigin='anonymous')
       script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js' integrity='sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==' crossorigin='anonymous')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js' integrity='sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==' crossorigin='anonymous')
       script(src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js' integrity='sha512-iceXjjbmB2rwoX93Ka6HAHP+B76IY1z0o3h+N1PeDtRSsyeetU3/0QKJqGyPJcX63zysNehggFwMC/bi7dvMig==' crossorigin='anonymous')
+      script(src='/script.js')
   body(class='bg-light')
     block navbar
-      nav(class='navbar navbar-expand-lg navbar-dark bg-dark')
+      nav(class='navbar navbar-expand-lg navbar-dark bg-dark mb-3')
         block navbar-brand
           a(class='navbar-brand') BookBase
         block navbar-toggler
@@ -18,19 +20,76 @@ html
         div(class='collapse navbar-collapse' id='nav-items')
           ul(class='navbar-nav mr-auto mt-2 mt-lg-0')
             block nav-items
-              block books
-                li(class='nav-item active')
-                  a(class='nav-link' href='/') Books
+              block shop
+                li(class='nav-item')
+                  a(class='nav-link' href='/') Shop
+                if user
+                  if user.isSeller
+                    a(class='nav-link' href='/books/manage') Manage my books
+                    a(class='nav-link' href='/sellers/my-orders') My Orders
+                if user
+                  if !user.isSeller
+                    a(class='nav-link' href='/customers/checkout') Checkout
+                    a(class='nav-link' href='/customers/my-orders') My Orders
+          block userInfo
+            if user
+              if user.isSeller
+                p(class='nav navbar-text mr-2') Logged in as Seller #{user.username} (#{user.email})
+              else
+                p(class='nav navbar-text mr-2') Logged in as Customer #{user.username} (#{user.email})
           block search
-            form(class='form-inline my-2 my-lg-0')
-              input(class='form-control mr-sm-2 bg-light' type='search' placeholder='Search' aria-label='Search')
+            form(class='form-inline my-2 my-lg-0' action='/books/search' method='get')
+              input(class='form-control mr-sm-2 bg-light' type='search' name='query' placeholder='Search' aria-label='Search')
               button(class='btn btn-secondary my-2 my-sm-0' type='submit') Search
           block account
             div(class='btn-group')
               button(class='btn btn-secondary btn-md ml-2 dropdown-toggle' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false') Account
               div(class='dropdown-menu bg-light')
-                block login
-                  a(class='dropdown-item' href='/login') Login
-                block register
-                  a(class='dropdown-item' href='/register') Register
-    block content
+                if !user
+                  block register
+                    a(class='dropdown-item' href='/register') Register
+                if !user
+                  block login
+                    a(class='dropdown-item' href='/login') Login
+                block manage
+                  if user
+                    if user.isSeller
+                      a(class='dropdown-item' href='/sellers/manage-my-account') Manage
+                    else
+                      a(class='dropdown-item' href='/customers/manage-my-account') Manage
+                if user
+                  block logout
+                    form(role='form' method='post' action='/logout')
+                      input(class='dropdown-item' type='submit' value='Logout')
+    div(class='container')
+      block content
+  footer#footer.bg-dark
+    .container.p-3
+      .row
+        .col-2
+          a(class='text-secondary' href='/imprint') Imprint
+        .col-2
+          a(class='text-secondary' href='/privacy-policy') Privacy policy
+    script.
+      $(document).ready(function () {
+        let docHeight = $(window).height();
+        let footerHeight = $('#footer').height();
+        let footerTop = $('#footer').position().top + footerHeight;
+        let marginTop = (docHeight - footerTop + 10);
+        if (footerTop < docHeight)
+          $('#footer').css('margin-top', marginTop + 'px');
+        else
+          $('#footer').css('margin-top', '0px');
+
+        setInterval(function () {
+          let docHeight = $(window).height();
+          let footerHeight = $('#footer').height();
+          let footerTop = $('#footer').position().top + footerHeight;
+          let marginTop = (docHeight - footerTop + 10);
+          if (footerTop < docHeight)
+            $('#footer').css('margin-top', marginTop + 'px');
+          else
+            $('#footer').css('margin-top', '0px');
+        }, 250);
+      });
+

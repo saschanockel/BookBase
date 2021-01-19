@@ -14,9 +14,11 @@ module.exports = new EntitySchema({
     },
     firstName: {
       type: 'varchar',
+      nullable: true,
     },
     lastName: {
       type: 'varchar',
+      nullable: true,
     },
     email: {
       type: 'varchar',
@@ -26,11 +28,21 @@ module.exports = new EntitySchema({
     },
     zip: {
       type: 'varchar',
+      nullable: true,
     },
     city: {
       type: 'varchar',
+      nullable: true,
     },
     address: {
+      type: 'varchar',
+      nullable: true,
+    },
+    creditCardNr: {
+      type: 'varchar',
+      nullable: true,
+    },
+    securityanswer: {
       type: 'varchar',
     },
   },
@@ -39,6 +51,7 @@ module.exports = new EntitySchema({
       target: 'Order',
       type: 'one-to-many',
       cascade: true,
+      onDelete: 'CASCADE',
     },
   },
 });

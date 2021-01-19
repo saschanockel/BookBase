@@ -1,5 +1,49 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  if books
+    each book, index in books
+      if !(index % 2)
+        .row
+          .col-md-6
+            figure.card.card-product.p-3
+              .img-wrap
+                img(src=`/uploads/cover/${book.id}` class='img-fluid rounded')
+              figcaption.info-wrap.mt-2
+                .row
+                  h4.title.col-auto #{book.title} | by #{book.author}
+                  a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${book.id}`) Download Cover
+                p.desc
+                  != book.description
+                p.desc Sold by #{book.seller.username}
+              .bottom-wrap
+                if user
+                  if !user.isSeller
+                    a.btn.btn-sm.btn-primary.float-right(tabindex='0' role='button' data-toggle='popover' data-trigger='focus' data-content='Added to cart!' data-placement='top' onclick=`addToCart(${book.id})`) Add to Cart
+                .price-wrap.h5
+                  span.price-new #{book.price}€
+          if (index + 1 < books.length)
+            .col-md-6
+              figure.card.card-product.p-3
+                .img-wrap
+                  img(src=`/uploads/cover/${books[index + 1].id}` class='img-fluid rounded')
+                figcaption.info-wrap.mt-2
+                  .row
+                    h4.title.col-auto #{books[index + 1].title} | by #{books[index + 1].author}
+                    a.btn.btn-sm.btn-outline-secondary(href=`/books/cover?file=${books[index + 1].id}`) Download Cover
+                  p.desc
+                    != books[index + 1].description
+                  p.desc Sold by #{books[index + 1].seller.username}
+                .bottom-wrap
+                  if user
+                    if !user.isSeller
+                      a.btn.btn-sm.btn-primary.float-right(tabindex='0' role='button' data-toggle='popover' data-trigger='focus' data-content='Added to cart!' data-placement='top' onclick=`addToCart(${books[index + 1].id})`) Add to Cart
+                  .price-wrap.h5
+                    span.price-new #{books[index + 1].price}€
+  else
+    h4 #{message}
+
+  script.
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    })

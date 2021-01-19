@@ -11,11 +11,15 @@ const { createConnection } = require('typeorm');
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+const methodOverride = require('method-override');
 const { httpLogger, logger } = require('./utils/winston');
+const getUserInfo = require('./middlewares/get-user-info');
 
 // create routers
 const indexRouter = require('./routes');
-const usersRouter = require('./routes/users');
+const customersRouter = require('./routes/customers');
+const sellersRouter = require('./routes/sellers');
+const booksRouter = require('./routes/books');
 
 // setup db connection
 createConnection({
@@ -49,10 +53,14 @@ app.use(morgan('combined', { stream: httpLogger.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(methodOverride('_method'));
+app.use(getUserInfo);
 
 // setup routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/customers', customersRouter);
+app.use('/sellers', sellersRouter);
+app.use('/books', booksRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -64,11 +72,16 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = process.env.NODE_ENV === 'development' ? err : {};
+  res.locals.error = process.env.NODE_ENV === 'development' ? err : false;
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error', { status: err.status || 500, message: res.locals.message, stack: res.locals.error.stack });
+  res.render('error', {
+    status: err.status || 500,
+    message: res.locals.message,
+    stack: res.locals.error.stack,
+    title: res.locals.message,
+  });
 });
 
 module.exports = app;

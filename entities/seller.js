@@ -18,12 +18,16 @@ module.exports = new EntitySchema({
     password: {
       type: 'varchar',
     },
+    securityanswer: {
+      type: 'varchar',
+    },
   },
   relations: {
     books: {
       target: 'Book',
       type: 'one-to-many',
       cascade: true,
+      onDelete: 'RESTRICT',
     },
   },
 });
